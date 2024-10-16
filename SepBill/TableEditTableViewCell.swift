@@ -11,7 +11,6 @@ class TableEditTableViewCell: UITableViewCell {
 
     // MARK: - Outlets
     @IBOutlet weak var tableNumberLabel: UILabel!
-    @IBOutlet weak var clientBillLabel: UILabel!
     @IBOutlet weak var tableBillLabel: UILabel!
     @IBOutlet weak var tableImage: UIImageView!
 

@@ -1,19 +1,19 @@
 //
-//  MenuViewController.swift
+//  MenuForSecondClientViewController.swift
 //  SepBill
 //
-//  Created by Кирилл Сысоев on 15.10.24.
+//  Created by Кирилл Сысоев on 16.10.24.
 //
 
 import UIKit
 
-protocol MenuViewControllerDelegate: AnyObject {
-    func updateBill(for tableNumber: Int, with totalPrice: Double)
+protocol MenuForSecondClientViewControllerDelegate: AnyObject {
+    func updateSecondClientBill(for tableNumber: Int, with totalPrice: Double)
 }
 
-class MenuViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class MenuForSecondClientViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    weak var delegate: MenuViewControllerDelegate?
+    weak var delegate: MenuForSecondClientViewControllerDelegate?
 
     @IBOutlet weak var menu: UITableView!
     @IBOutlet weak var billLabel: UILabel!
@@ -23,9 +23,9 @@ class MenuViewController: UIViewController, UITableViewDelegate, UITableViewData
     var tables = [Int]()
     var selectedTableIndex: Int = 0 // Хранит индекс выбранного стола
 
-    var client1Bill: Double = 0 {
+    var client2Bill: Double = 0 { // Обновлено имя переменной для второго клиента
         didSet {
-            billLabel.text = "Счет: \(client1Bill) р."
+            billLabel.text = "Счет 2: \(client2Bill) р." // Обновлено название лейбла
         }
     }
 
@@ -44,7 +44,7 @@ class MenuViewController: UIViewController, UITableViewDelegate, UITableViewData
         menuProducts.append(contentsOf: Products.desserts)
         menuProducts.append(contentsOf: Products.hotFishDishes)
         menuProducts.append(contentsOf: Products.hotMeatDishes)
-        billLabel.text = "Счет: \(client1Bill) р."
+        billLabel.text = "Счет: \(client2Bill) р."
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -84,21 +84,21 @@ class MenuViewController: UIViewController, UITableViewDelegate, UITableViewData
 
         if sender.isOn {
             selectedProducts.append(product)
-            client1Bill += product.productPrice // Обновляем сумму счета
+            client2Bill += product.productPrice // Обновляем сумму счета второго клиента
             cell.backgroundColor = UIColor(red: 0.796, green: 0.874, blue: 0.811, alpha: 1)
         } else {
             if let index = selectedProducts.firstIndex(of: product) {
                 selectedProducts.remove(at: index)
-                client1Bill -= product.productPrice // Уменьшаем сумму счета
+                client2Bill -= product.productPrice // Уменьшаем сумму счета второго клиента
                 cell.backgroundColor = .white
             }
         }
     }
 
-    // Не забудьте добавить метод для передачи данных при возврате
+    // Передаем данные при возврате
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "backToMain", let mainVC = segue.destination as? MainViewController {
-            mainVC.updateBill(for: tables[selectedTableIndex], with: client1Bill)
+            mainVC.updateBill(for: tables[selectedTableIndex], with: client2Bill) 
         }
     }
 }
