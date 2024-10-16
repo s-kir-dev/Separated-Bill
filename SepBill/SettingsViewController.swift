@@ -7,42 +7,45 @@
 
 import UIKit
 
-protocol SettingsViewControllerDelegate: AnyObject {
-    func didUpdateTableNumbers(_ tableNumbers: [Int])
-}
-
 class SettingsViewController: UIViewController {
     
     var tableNumbers: [Int] = []
-    
+    var tablePersonsCount: [Int: Int] = [:] // Словарь для хранения количества клиентов за каждым столом
+
     weak var delegate: SettingsViewControllerDelegate?
-    
+
     @IBOutlet weak var confirmButton: UIButton!
-    @IBOutlet weak var personsCount: UITextField!
+    @IBOutlet weak var personsCountField: UITextField!
     @IBOutlet weak var tableNumberField: UITextField!
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // Загружаем номера столов
         if let savedData = UserDefaults.standard.data(forKey: "tableNumbers"),
            let savedNumbers = try? JSONDecoder().decode([Int].self, from: savedData) {
             tableNumbers = savedNumbers
         }
-        
+
+        // Загружаем количество клиентов за столами
+        if let savedPersonsCountData = UserDefaults.standard.data(forKey: "tablePersonsCount"),
+           let savedPersonsCount = try? JSONDecoder().decode([Int: Int].self, from: savedPersonsCountData) {
+            tablePersonsCount = savedPersonsCount
+        }
+
         confirmButton.addTarget(self, action: #selector(confirmButtonPressed), for: .touchUpInside)
 
-        addToolBarToKeyboard(personsCount)
+        addToolBarToKeyboard(personsCountField)
         addToolBarToKeyboard(tableNumberField)
-
     }
-    
+
     func addToolBarToKeyboard(_ field: UITextField) {
         let toolbar = UIToolbar()
         toolbar.sizeToFit()
-        
+
         let doneButton = UIBarButtonItem(title: "Готово", style: .done, target: self, action: #selector(dismissKeyboard))
         toolbar.setItems([doneButton], animated: true)
-        
+
         field.inputAccessoryView = toolbar
     }
 
@@ -54,13 +57,13 @@ class SettingsViewController: UIViewController {
     func validateInput() {
         let isPersonsCountValid = validatePersonsCount()
         let isTableNumberValid = validateTableNumber()
-        
+
         confirmButton.isEnabled = isPersonsCountValid && isTableNumberValid
     }
 
     func validatePersonsCount() -> Bool {
         var bool = false
-        if let text = personsCount.text, let count = Int(text) {
+        if let text = personsCountField.text, let count = Int(text) {
             if count > 0 && count <= 4 {
                 bool = true
             } else {
@@ -96,17 +99,32 @@ class SettingsViewController: UIViewController {
     }
 
     @objc func confirmButtonPressed() {
-          if let text = tableNumberField.text, let tableNumber = Int(text) {
-              tableNumbers.append(tableNumber)
-              if let savedData = try? JSONEncoder().encode(tableNumbers) {
-                  UserDefaults.standard.set(savedData, forKey: "tableNumbers")
-              }
-          }
-        
-        delegate?.didUpdateTableNumbers(tableNumbers)
+        guard let tableNumberText = tableNumberField.text,
+              let tableNumber = Int(tableNumberText),
+              let personsCountText = personsCountField.text,
+              let personsCount = Int(personsCountText) else { return }
 
-          personsCount.text = ""
-          tableNumberField.text = ""
-          confirmButton.isEnabled = false
-      }
+        // Добавляем новый номер стола
+        tableNumbers.append(tableNumber)
+        // Обновляем количество клиентов в словаре
+        tablePersonsCount[tableNumber] = personsCount
+
+        // Сохраняем данные
+        if let savedData = try? JSONEncoder().encode(tableNumbers) {
+            UserDefaults.standard.set(savedData, forKey: "tableNumbers")
+        }
+
+        // Сохраняем количество клиентов в UserDefaults
+        if let savedPersonsCountData = try? JSONEncoder().encode(tablePersonsCount) {
+            UserDefaults.standard.set(savedPersonsCountData, forKey: "tablePersonsCount")
+        }
+
+        // Уведомляем MainViewController о добавлении стола и количества клиентов
+        delegate?.didUpdateTableNumbers(tableNumbers)
+        delegate?.didUpdatePersonsCount(personsCount, forTable: tableNumber) // Передаем номер стола
+
+        personsCountField.text = ""
+        tableNumberField.text = ""
+        confirmButton.isEnabled = false
+    }
 }
