@@ -44,8 +44,27 @@ class MenuViewController: UIViewController, UITableViewDelegate, UITableViewData
         menuProducts.append(contentsOf: Products.desserts)
         menuProducts.append(contentsOf: Products.hotFishDishes)
         menuProducts.append(contentsOf: Products.hotMeatDishes)
+
+        // Загружаем выбранные продукты для текущего стола
+        loadSelectedProducts()
+
         billLabel.text = "Счет: \(client1Bill) р."
     }
+
+    // Сохранение выбранных продуктов в UserDefaults
+    func saveSelectedProducts() {
+        let selectedProductNames = selectedProducts.map { $0.productName }
+        UserDefaults.standard.set(selectedProductNames, forKey: "selectedProductsForTable_\(tables[selectedTableIndex])")
+    }
+
+    // Загрузка выбранных продуктов из UserDefaults
+    func loadSelectedProducts() {
+        if let savedProductNames = UserDefaults.standard.array(forKey: "selectedProductsForTable_\(tables[selectedTableIndex])") as? [String] {
+            selectedProducts = menuProducts.filter { savedProductNames.contains($0.productName) }
+        }
+    }
+
+    // MARK: - UITableViewDataSource
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return menuProducts.count
@@ -59,16 +78,19 @@ class MenuViewController: UIViewController, UITableViewDelegate, UITableViewData
         let cell = tableView.dequeueReusableCell(withIdentifier: "menuCell", for: indexPath) as! ProductTableViewCell
         let product = menuProducts[indexPath.row]
 
+        // Заполняем данные ячейки
         cell.productDescription.text = product.productDescription
         cell.productName.text = product.productName
         cell.productImage.image = UIImage(named: product.productImage)
         cell.productPrice.text = "\(product.productPrice) р."
-        cell.selectedProduct.isOn = selectedProducts.contains(product)
 
+        // Если продукт уже был выбран, показываем метку и меняем цвет
         if selectedProducts.contains(product) {
-            cell.backgroundColor = UIColor(red: 0.796, green: 0.874, blue: 0.811, alpha: 1)
+            cell.backgroundColor = UIColor(red: 0.796, green: 0.874, blue: 0.811, alpha: 0.5)
+            cell.selectedBefore.isHidden = false
         } else {
             cell.backgroundColor = .white
+            cell.selectedBefore.isHidden = true
         }
 
         cell.selectedProduct.tag = indexPath.row
@@ -78,6 +100,7 @@ class MenuViewController: UIViewController, UITableViewDelegate, UITableViewData
         return cell
     }
 
+    // MARK: - Продукт выбран/снят выбор
     @IBAction func selectProduct(_ sender: UISwitch) {
         let product = menuProducts[sender.tag]
         let cell = menu.cellForRow(at: IndexPath(row: sender.tag, section: 0)) as! ProductTableViewCell
@@ -90,12 +113,19 @@ class MenuViewController: UIViewController, UITableViewDelegate, UITableViewData
             if let index = selectedProducts.firstIndex(of: product) {
                 selectedProducts.remove(at: index)
                 client1Bill -= product.productPrice // Уменьшаем сумму счета
-                cell.backgroundColor = .white
+                if selectedProducts.contains(product) {
+                    cell.backgroundColor = UIColor(red: 0.796, green: 0.874, blue: 0.811, alpha: 0.5)
+                } else {
+                    cell.backgroundColor = .white
+                }
             }
         }
+
+        // Сохраняем состояние после выбора/снятия продукта
+        saveSelectedProducts()
     }
 
-    // Не забудьте добавить метод для передачи данных при возврате
+    // Передача данных при возврате
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "backToMain", let mainVC = segue.destination as? MainViewController {
             mainVC.updateBill(for: tables[selectedTableIndex], with: client1Bill)

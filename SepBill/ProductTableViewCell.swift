@@ -19,6 +19,8 @@ class ProductTableViewCell: UITableViewCell {
     
     @IBOutlet weak var selectedProduct: UISwitch!
     
+    @IBOutlet weak var selectedBefore: UILabel!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         

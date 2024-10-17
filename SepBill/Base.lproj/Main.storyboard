@@ -21,40 +21,33 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="tableCell" rowHeight="130" id="y7M-MQ-dU3" customClass="TableEditTableViewCell" customModule="SepBill" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="50" width="393" height="130"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="tableCell" rowHeight="177" id="y7M-MQ-dU3" customClass="TableEditTableViewCell" customModule="SepBill" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="50" width="393" height="177"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="y7M-MQ-dU3" id="aBg-By-Bco">
-                                            <rect key="frame" x="0.0" y="0.0" width="393" height="130"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="393" height="177"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="table" translatesAutoresizingMaskIntoConstraints="NO" id="Ote-gA-NEw">
-                                                    <rect key="frame" x="2" y="18" width="89" height="101"/>
+                                                    <rect key="frame" x="5" y="38" width="89" height="101"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
-                                                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="0 р." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="S53-CA-iKG">
-                                                    <rect key="frame" x="200" y="11" width="72" height="21"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
                                                 <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="0 р." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sG9-tD-m70">
-                                                    <rect key="frame" x="200" y="40" width="72" height="21"/>
+                                                    <rect key="frame" x="200" y="56" width="72" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="0 р." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3qZ-4c-rCH">
-                                                    <rect key="frame" x="200" y="69" width="72" height="21"/>
+                                                    <rect key="frame" x="200" y="99" width="72" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="0 р." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="G6a-ag-Gul">
-                                                    <rect key="frame" x="200" y="98" width="72" height="21"/>
+                                                    <rect key="frame" x="200" y="142" width="72" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                     <nil key="textColor"/>
@@ -68,14 +61,14 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="0 р." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="E0Z-3o-83v">
-                                                    <rect key="frame" x="300" y="12" width="73" height="107"/>
+                                                    <rect key="frame" x="300" y="6" width="73" height="164"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" weight="black" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N50-9X-1aa">
-                                                    <rect key="frame" x="99" y="40" width="80" height="21"/>
+                                                    <rect key="frame" x="99" y="48" width="80" height="36"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <state key="normal" title="Button"/>
                                                     <buttonConfiguration key="configuration" style="filled" title="Клиент 2">
@@ -84,11 +77,12 @@
                                                         <color key="baseBackgroundColor" red="0.91764706370000004" green="0.83137255909999996" blue="0.81960785390000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                     </buttonConfiguration>
                                                     <connections>
+                                                        <action selector="showMenu2:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ntX-K7-gcJ"/>
                                                         <segue destination="w0n-U8-NZh" kind="presentation" identifier="showMenu2" modalPresentationStyle="fullScreen" id="LhO-7G-l0z"/>
                                                     </connections>
                                                 </button>
                                                 <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5gO-O5-8Mr">
-                                                    <rect key="frame" x="99" y="69" width="80" height="21"/>
+                                                    <rect key="frame" x="99" y="91" width="80" height="36"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <state key="normal" title="Button"/>
                                                     <buttonConfiguration key="configuration" style="filled" title="Клиент 3">
@@ -97,11 +91,12 @@
                                                         <color key="baseBackgroundColor" red="0.91764706370000004" green="0.83137255909999996" blue="0.81960785390000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                     </buttonConfiguration>
                                                     <connections>
+                                                        <action selector="showMenu3:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Ke9-yq-Dqn"/>
                                                         <segue destination="kd0-3I-E0r" kind="presentation" identifier="showMenu3" modalPresentationStyle="fullScreen" id="Cr3-f6-g3q"/>
                                                     </connections>
                                                 </button>
                                                 <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ShE-1e-wja">
-                                                    <rect key="frame" x="99" y="98" width="80" height="21"/>
+                                                    <rect key="frame" x="99" y="134" width="80" height="36"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <state key="normal" title="Button"/>
                                                     <buttonConfiguration key="configuration" style="filled" title="Клиент 4">
@@ -110,11 +105,12 @@
                                                         <color key="baseBackgroundColor" red="0.91764706370000004" green="0.83137255909999996" blue="0.81960785390000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                     </buttonConfiguration>
                                                     <connections>
+                                                        <action selector="showMenu4:" destination="BYZ-38-t0r" eventType="touchUpInside" id="WhL-4Q-KgP"/>
                                                         <segue destination="KZA-Rg-u7X" kind="presentation" identifier="showMenu4" modalPresentationStyle="fullScreen" id="nSf-ZS-12V"/>
                                                     </connections>
                                                 </button>
                                                 <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Njw-3Q-rbZ">
-                                                    <rect key="frame" x="99" y="11" width="80" height="21"/>
+                                                    <rect key="frame" x="99" y="6" width="80" height="36"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <state key="normal" title="Button"/>
                                                     <buttonConfiguration key="configuration" style="filled" title="Клиент 1">
@@ -126,6 +122,13 @@
                                                         <action selector="showMenu:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dvX-SW-kDm"/>
                                                     </connections>
                                                 </button>
+                                                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="0 р." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="S53-CA-iKG">
+                                                    <rect key="frame" x="200" y="11" width="72" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
@@ -329,9 +332,16 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="30.00р" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I71-iK-Zs5">
-                                                    <rect key="frame" x="292" y="25" width="67" height="20"/>
+                                                    <rect key="frame" x="294" y="57" width="67" height="20"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" weight="black" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Ранее выбрано" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Cd9-1Z-r3D">
+                                                    <rect key="frame" x="294" y="8" width="67" height="41"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -342,6 +352,7 @@
                                             <outlet property="productImage" destination="HfN-hb-Hc2" id="CM6-us-3MZ"/>
                                             <outlet property="productName" destination="YqP-Ws-Uf6" id="i2c-Xd-MD2"/>
                                             <outlet property="productPrice" destination="I71-iK-Zs5" id="zam-06-HnO"/>
+                                            <outlet property="selectedBefore" destination="Cd9-1Z-r3D" id="PST-Pl-ock"/>
                                             <outlet property="selectedProduct" destination="0Dv-F2-7dQ" id="Ya6-zH-9Z0"/>
                                         </connections>
                                     </tableViewCell>
@@ -367,7 +378,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZWE-cz-Bq1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <exit id="qIN-bN-yxp" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="3615" y="359"/>
+            <point key="canvasLocation" x="3614.5038167938928" y="358.45070422535213"/>
         </scene>
         <!--Menu For Second Client View Controller-->
         <scene sceneID="lKY-7j-1Fp">
@@ -438,9 +449,16 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="30.00р" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T8c-e3-ukC">
-                                                    <rect key="frame" x="292" y="25" width="67" height="20"/>
+                                                    <rect key="frame" x="294" y="57" width="67" height="20"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" weight="black" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Ранее выбрано" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vhC-7h-pMc">
+                                                    <rect key="frame" x="294" y="8" width="67" height="41"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -451,6 +469,7 @@
                                             <outlet property="productImage" destination="ZE0-Ot-cTo" id="mQ7-iB-Q1g"/>
                                             <outlet property="productName" destination="Llo-8L-SaS" id="DIG-RY-eRn"/>
                                             <outlet property="productPrice" destination="T8c-e3-ukC" id="Q0h-gd-j3M"/>
+                                            <outlet property="selectedBefore" destination="vhC-7h-pMc" id="Uml-IL-JhQ"/>
                                             <outlet property="selectedProduct" destination="d2k-AS-p7T" id="lYf-fq-H7U"/>
                                         </connections>
                                     </tableViewCell>
@@ -547,9 +566,16 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="30.00р" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3zk-3p-GEo">
-                                                    <rect key="frame" x="292" y="25" width="67" height="20"/>
+                                                    <rect key="frame" x="294" y="57" width="67" height="20"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" weight="black" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Ранее выбрано" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="orW-88-FkS">
+                                                    <rect key="frame" x="294" y="8" width="67" height="41"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -560,6 +586,7 @@
                                             <outlet property="productImage" destination="9M6-Mc-yxP" id="Guk-ld-9xU"/>
                                             <outlet property="productName" destination="f8I-VR-RsJ" id="MQa-Ac-w9z"/>
                                             <outlet property="productPrice" destination="3zk-3p-GEo" id="Xdb-aF-Y2U"/>
+                                            <outlet property="selectedBefore" destination="orW-88-FkS" id="y07-rP-ESz"/>
                                             <outlet property="selectedProduct" destination="3cI-zV-UeW" id="7Yy-7R-SuR"/>
                                         </connections>
                                     </tableViewCell>
@@ -656,9 +683,16 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="30.00р" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oKs-XV-M0Q">
-                                                    <rect key="frame" x="292" y="25" width="67" height="20"/>
+                                                    <rect key="frame" x="294" y="57" width="67" height="20"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" weight="black" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Ранее выбрано" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ItF-ua-ESn">
+                                                    <rect key="frame" x="294" y="8" width="67" height="41"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -669,6 +703,7 @@
                                             <outlet property="productImage" destination="999-DT-5nw" id="NBl-32-F15"/>
                                             <outlet property="productName" destination="wQN-AF-IcT" id="gPt-ao-gh2"/>
                                             <outlet property="productPrice" destination="oKs-XV-M0Q" id="L92-Vy-AgB"/>
+                                            <outlet property="selectedBefore" destination="ItF-ua-ESn" id="1bL-7Q-2Yh"/>
                                             <outlet property="selectedProduct" destination="u4l-ny-pLX" id="kbX-66-Mby"/>
                                         </connections>
                                     </tableViewCell>

@@ -7,10 +7,6 @@
 
 import UIKit
 
-protocol MenuForSecondClientViewControllerDelegate: AnyObject {
-    func updateSecondClientBill(for tableNumber: Int, with totalPrice: Double)
-}
-
 class MenuForSecondClientViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     weak var delegate: MenuForSecondClientViewControllerDelegate?
@@ -23,9 +19,9 @@ class MenuForSecondClientViewController: UIViewController, UITableViewDelegate, 
     var tables = [Int]()
     var selectedTableIndex: Int = 0 // Хранит индекс выбранного стола
 
-    var client2Bill: Double = 0 { // Обновлено имя переменной для второго клиента
+    var client2Bill: Double = 0 {
         didSet {
-            billLabel.text = "Счет 2: \(client2Bill) р." // Обновлено название лейбла
+            billLabel.text = "Счет: \(client2Bill) р."
         }
     }
 
@@ -44,8 +40,27 @@ class MenuForSecondClientViewController: UIViewController, UITableViewDelegate, 
         menuProducts.append(contentsOf: Products.desserts)
         menuProducts.append(contentsOf: Products.hotFishDishes)
         menuProducts.append(contentsOf: Products.hotMeatDishes)
+
+        // Загружаем выбранные продукты для второго клиента
+        loadSelectedProducts()
+
         billLabel.text = "Счет: \(client2Bill) р."
     }
+
+    // Сохранение выбранных продуктов в UserDefaults
+    func saveSelectedProducts() {
+        let selectedProductNames = selectedProducts.map { $0.productName }
+        UserDefaults.standard.set(selectedProductNames, forKey: "selectedProductsForSecondClient_\(tables[selectedTableIndex])")
+    }
+
+    // Загрузка выбранных продуктов из UserDefaults
+    func loadSelectedProducts() {
+        if let savedProductNames = UserDefaults.standard.array(forKey: "selectedProductsForSecondClient_\(tables[selectedTableIndex])") as? [String] {
+            selectedProducts = menuProducts.filter { savedProductNames.contains($0.productName) }
+        }
+    }
+
+    // MARK: - UITableViewDataSource
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return menuProducts.count
@@ -59,16 +74,19 @@ class MenuForSecondClientViewController: UIViewController, UITableViewDelegate, 
         let cell = tableView.dequeueReusableCell(withIdentifier: "menuCell", for: indexPath) as! ProductTableViewCell
         let product = menuProducts[indexPath.row]
 
+        // Заполняем данные ячейки
         cell.productDescription.text = product.productDescription
         cell.productName.text = product.productName
         cell.productImage.image = UIImage(named: product.productImage)
         cell.productPrice.text = "\(product.productPrice) р."
-        cell.selectedProduct.isOn = selectedProducts.contains(product)
 
+        // Если продукт уже был выбран, показываем метку и меняем цвет
         if selectedProducts.contains(product) {
-            cell.backgroundColor = UIColor(red: 0.796, green: 0.874, blue: 0.811, alpha: 1)
+            cell.backgroundColor = UIColor(red: 0.796, green: 0.874, blue: 0.811, alpha: 0.5)
+            cell.selectedBefore.isHidden = false
         } else {
             cell.backgroundColor = .white
+            cell.selectedBefore.isHidden = true
         }
 
         cell.selectedProduct.tag = indexPath.row
@@ -78,6 +96,7 @@ class MenuForSecondClientViewController: UIViewController, UITableViewDelegate, 
         return cell
     }
 
+    // MARK: - Продукт выбран/снят выбор
     @IBAction func selectProduct(_ sender: UISwitch) {
         let product = menuProducts[sender.tag]
         let cell = menu.cellForRow(at: IndexPath(row: sender.tag, section: 0)) as! ProductTableViewCell
@@ -90,15 +109,26 @@ class MenuForSecondClientViewController: UIViewController, UITableViewDelegate, 
             if let index = selectedProducts.firstIndex(of: product) {
                 selectedProducts.remove(at: index)
                 client2Bill -= product.productPrice // Уменьшаем сумму счета второго клиента
-                cell.backgroundColor = .white
+                if selectedProducts.contains(product) {
+                    cell.backgroundColor = UIColor(red: 0.796, green: 0.874, blue: 0.811, alpha: 0.5)
+                } else {
+                    cell.backgroundColor = .white
+                }
             }
         }
+
+        // Сохраняем состояние после выбора/снятия продукта
+        saveSelectedProducts()
+
+        // Обновляем метку счета при каждом выборе/снятии выбора
+        billLabel.text = "Счет: \(client2Bill) р."
     }
 
-    // Передаем данные при возврате
+    // Передача данных при возврате
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "backToMain", let mainVC = segue.destination as? MainViewController {
-            mainVC.updateBill(for: tables[selectedTableIndex], with: client2Bill) 
+        if segue.identifier == "backToMain" {
+            let tableNumber = tables[selectedTableIndex] // Получаем номер стола
+            delegate?.updateSecondClientBill(for: tableNumber, with: client2Bill) // Передаем счет
         }
     }
 }
