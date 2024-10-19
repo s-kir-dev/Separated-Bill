@@ -78,7 +78,6 @@
                                                     </buttonConfiguration>
                                                     <connections>
                                                         <action selector="showMenu2:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ntX-K7-gcJ"/>
-                                                        <segue destination="w0n-U8-NZh" kind="presentation" identifier="showMenu2" modalPresentationStyle="fullScreen" id="LhO-7G-l0z"/>
                                                     </connections>
                                                 </button>
                                                 <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5gO-O5-8Mr">
@@ -92,7 +91,6 @@
                                                     </buttonConfiguration>
                                                     <connections>
                                                         <action selector="showMenu3:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Ke9-yq-Dqn"/>
-                                                        <segue destination="kd0-3I-E0r" kind="presentation" identifier="showMenu3" modalPresentationStyle="fullScreen" id="Cr3-f6-g3q"/>
                                                     </connections>
                                                 </button>
                                                 <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ShE-1e-wja">
@@ -106,7 +104,6 @@
                                                     </buttonConfiguration>
                                                     <connections>
                                                         <action selector="showMenu4:" destination="BYZ-38-t0r" eventType="touchUpInside" id="WhL-4Q-KgP"/>
-                                                        <segue destination="KZA-Rg-u7X" kind="presentation" identifier="showMenu4" modalPresentationStyle="fullScreen" id="nSf-ZS-12V"/>
                                                     </connections>
                                                 </button>
                                                 <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Njw-3Q-rbZ">
@@ -203,6 +200,9 @@
                     <connections>
                         <outlet property="tables" destination="TTp-dM-0ny" id="zw2-uu-PaT"/>
                         <segue destination="qLc-7e-MKc" kind="presentation" identifier="showMenu1" modalPresentationStyle="fullScreen" id="p1r-El-VE7"/>
+                        <segue destination="KZA-Rg-u7X" kind="presentation" identifier="showMenu4" modalPresentationStyle="fullScreen" id="rad-F3-Agx"/>
+                        <segue destination="w0n-U8-NZh" kind="presentation" identifier="showMenu2" modalPresentationStyle="fullScreen" id="XCH-1M-LIo"/>
+                        <segue destination="kd0-3I-E0r" kind="presentation" identifier="showMenu3" modalPresentationStyle="fullScreen" id="V9C-1j-XvX"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

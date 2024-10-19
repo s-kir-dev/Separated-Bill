@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol MenuForThirdClientViewControllerDelegate : AnyObject {
+    func updateThirdClientBill(for tableNumber: Int, with client3Bill: Double)
+}
+
 class MenuForThirdClientViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     weak var delegate: MenuForThirdClientViewControllerDelegate?

@@ -10,17 +10,8 @@ import UIKit
 // Протокол для делегата, отвечающего за обновление счета первого клиента
 protocol MainViewControllerDelegate: AnyObject {
     func updateBill(for tableNumber: Int, with client1Bill: Double)
-}
-
-protocol MenuForSecondClientViewControllerDelegate: AnyObject {
     func updateSecondClientBill(for tableNumber: Int, with client2Bill: Double)
-}
-
-protocol MenuForThirdClientViewControllerDelegate : AnyObject {
     func updateThirdClientBill(for tableNumber: Int, with client3Bill: Double)
-}
-
-protocol MenuForFourthClientViewControllerDelegate : AnyObject {
     func updateFourthClientBill(for tableNumber: Int, with client4Bill: Double)
 }
 
@@ -33,8 +24,8 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     @IBOutlet weak var tables: UITableView!
     
-    var client1BillFromMenu: [Int: Double] = [:] // Храним общий счет для каждого стола
-    var client2BillFromMenu: [Int: Double] = [:] // Храним общий счет для второго клиента
+    var client1BillFromMenu: [Int: Double] = [:] // Храним общий счет для первого клиента
+    var client2BillFromMenu: [Int: Double] = [:]
     var client3BillFromMenu: [Int: Double] = [:]
     var client4BillFromMenu: [Int: Double] = [:]
     var totalPrices: [Int: Double] = [:]
@@ -46,6 +37,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     // MARK: - SettingsViewControllerDelegate
     func didUpdateTableNumbers(_ tableNumbers: [Int]) {
         self.tableNumbers = tableNumbers
+        loadBills()
         tables.reloadData() // Обновляем таблицу после изменения списка столов
     }
     
@@ -110,6 +102,13 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
         
         // Загрузка счетов для каждого стола
+        loadBills()
+
+        // Обновляем таблицу с общими счетами
+        tables.reloadData()
+    }
+    
+    func loadBills() {
         for tableNumber in tableNumbers {
             let keyPrefix = "clientBill\(tableNumber)"
             
@@ -127,9 +126,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             totalPrices[tableNumber] = totalBill
             UserDefaults.standard.set(totalBill, forKey: "\(keyPrefix)TotalBill")
         }
-
-        // Обновляем таблицу с общими счетами
-        tables.reloadData()
     }
     
     func saveBillToUserDefaults(for tableNumber: Int) {
@@ -147,6 +143,39 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
                         (client3BillFromMenu[tableNumber] ?? 0.00) +
                         (client4BillFromMenu[tableNumber] ?? 0.00)
         UserDefaults.standard.set(totalBill, forKey: "\(keyPrefix)TotalBill")
+    }
+    
+    func removeDataForTable(_ tableNumber: Int) {
+        let keyPrefix = "clientBill\(tableNumber)"
+        
+        // Удаляем счета для клиентов
+        UserDefaults.standard.removeObject(forKey: "\(keyPrefix)Client1")
+        UserDefaults.standard.removeObject(forKey: "\(keyPrefix)Client2")
+        UserDefaults.standard.removeObject(forKey: "\(keyPrefix)Client3")
+        UserDefaults.standard.removeObject(forKey: "\(keyPrefix)Client4")
+        
+        // Удаляем общий счет
+        UserDefaults.standard.removeObject(forKey: "\(keyPrefix)TotalBill")
+        
+        // Удаляем количество людей за столом
+        if var tablePersonsCount = try? JSONDecoder().decode([Int: Int].self, from: UserDefaults.standard.data(forKey: "tablePersonsCount") ?? Data()) {
+            tablePersonsCount.removeValue(forKey: tableNumber)
+            let encodedPersonsCount = try? JSONEncoder().encode(tablePersonsCount)
+            UserDefaults.standard.set(encodedPersonsCount, forKey: "tablePersonsCount")
+        }
+        
+        // Удаляем стол из списка номеров столов
+        if var tableNumbers = try? JSONDecoder().decode([Int].self, from: UserDefaults.standard.data(forKey: "tableNumbers") ?? Data()) {
+            tableNumbers.removeAll { $0 == tableNumber }
+            let encodedNumbers = try? JSONEncoder().encode(tableNumbers)
+            UserDefaults.standard.set(encodedNumbers, forKey: "tableNumbers")
+        }
+
+        // Удаляем выбранные продукты для стола
+        UserDefaults.standard.removeObject(forKey: "selectedProductsForTable_\(tableNumber)")
+        UserDefaults.standard.removeObject(forKey: "selectedProductsForSecondClient_\(tableNumber)")
+        UserDefaults.standard.removeObject(forKey: "selectedProductsForThirdClient_\(tableNumber)")
+        UserDefaults.standard.removeObject(forKey: "selectedProductsForFourthClient_\(tableNumber)")
     }
     
     @IBAction func backToMain(_ segue: UIStoryboardSegue) {
@@ -182,6 +211,13 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     // MARK: - UITableViewDataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return tableNumbers.count
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            deleteTable(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -259,13 +295,29 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             let indexPath = IndexPath(row: rowIndex, section: 0)
             if let cell = tables.cellForRow(at: indexPath) as? TableEditTableViewCell {
                 client4BillFromMenu[tableNumber] = client4Bill
-                // Убедитесь, что мы правильно вычисляем общую сумму
                 let totalBill = (client1BillFromMenu[tableNumber] ?? 0.00) + (client2BillFromMenu[tableNumber] ?? 0.00) + (client3BillFromMenu[tableNumber] ?? 0.00) + (client4BillFromMenu[tableNumber] ?? 0.00)
                 cell.priceLabel4.text = "\(client4Bill) р."
                 cell.tableBillLabel.text = "\(totalBill) р."
                 saveBillToUserDefaults(for: tableNumber)
             }
         }
+    }
+    
+    func deleteTable(at index: Int) {
+        let tableNumber = tableNumbers[index]
+        
+        // Удаляем данные для этого стола
+        removeDataForTable(tableNumber)
+        
+        // Удаляем данные из локальных массивов
+        client1BillFromMenu.removeValue(forKey: tableNumber)
+        client2BillFromMenu.removeValue(forKey: tableNumber)
+        client3BillFromMenu.removeValue(forKey: tableNumber)
+        client4BillFromMenu.removeValue(forKey: tableNumber)
+        totalPrices.removeValue(forKey: tableNumber)
+        
+        // Удаляем стол из списка столов
+        tableNumbers.remove(at: index)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
