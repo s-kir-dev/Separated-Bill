@@ -35,15 +35,15 @@ class MenuForThirdClientViewController: UIViewController, UITableViewDelegate, U
         menu.delegate = self
 
         // Загружаем продукты в меню
-        menuProducts.append(contentsOf: Products.drinksWithAlcohol)
         menuProducts.append(contentsOf: Products.drinksWithoutAlcohol)
-        menuProducts.append(contentsOf: Products.snacks)
-        menuProducts.append(contentsOf: Products.soups)
-        menuProducts.append(contentsOf: Products.salats)
-        menuProducts.append(contentsOf: Products.pasta)
-        menuProducts.append(contentsOf: Products.desserts)
+        menuProducts.append(contentsOf: Products.drinksWithAlcohol)
         menuProducts.append(contentsOf: Products.hotFishDishes)
         menuProducts.append(contentsOf: Products.hotMeatDishes)
+        menuProducts.append(contentsOf: Products.pasta)
+        menuProducts.append(contentsOf: Products.soups)
+        menuProducts.append(contentsOf: Products.salats)
+        menuProducts.append(contentsOf: Products.snacks)
+        menuProducts.append(contentsOf: Products.desserts)
 
         // Загружаем выбранные продукты для третьего клиента
         loadSelectedProducts()
