@@ -11,7 +11,6 @@ class TableEditTableViewCell: UITableViewCell {
 
     // MARK: - Outlets
     @IBOutlet weak var tableNumberLabel: UILabel!
-    @IBOutlet weak var clientBillLabel: UILabel!
     @IBOutlet weak var tableBillLabel: UILabel!
     @IBOutlet weak var tableImage: UIImageView!
 
@@ -59,29 +58,15 @@ class TableEditTableViewCell: UITableViewCell {
         }
     }
 
-    func updatePriceLabels(_ totalPrice: Double) {
-        guard personCount > 0 else { return }
-
-        let individualPrice = totalPrice / Double(personCount)
-
-        // Обновляем метки цен для каждого клиента
-        for i in 0..<personCount {
-            priceLabels[i].text = String(format: "%.2f р.", individualPrice)
-        }
-
-        // Обновляем общий счет для стола
-        tableBillLabel.text = String(format: "%.2f р.", "\(totalPrice)р.")
-    }
-
     // MARK: - Delegate Methods
     func didUpdatePersonsCount(_ personsCount: Int) {
         self.personCount = personsCount
         updateUIForClients() // Обновляем интерфейс, если изменилось количество людей
     }
 
-    func didUpdateTotalPrice(_ totalPrice: Double) {
-        updatePriceLabels(totalPrice)
-    }
+//    func didUpdateTotalPrice(_ totalPrice: Double) {
+//        updatePriceLabels(totalPrice)
+//    }
 
     // MARK: - Selection Handling
     override func setSelected(_ selected: Bool, animated: Bool) {

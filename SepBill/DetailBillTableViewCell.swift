@@ -1,14 +1,16 @@
 //
-//  ProductTableViewCell.swift
+//  DetailBillTableViewCell.swift
 //  SepBill
 //
-//  Created by Кирилл Сысоев on 15.10.24.
+//  Created by Кирилл Сысоев on 23.10.24.
 //
 
 import UIKit
 
-class ProductTableViewCell: UITableViewCell {
+class DetailBillTableViewCell: UITableViewCell {
 
+    @IBOutlet weak var orderedByLabel: UILabel!
+    
     @IBOutlet weak var productImage: UIImageView!
     
     @IBOutlet weak var productName: UILabel!
@@ -17,16 +19,16 @@ class ProductTableViewCell: UITableViewCell {
     
     @IBOutlet weak var productPrice: UILabel!
     
-    @IBOutlet weak var selectedProduct: UISwitch!
-        
     override func awakeFromNib() {
         super.awakeFromNib()
+        
         
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
+        // Configure the view for the selected state
     }
 
 }
