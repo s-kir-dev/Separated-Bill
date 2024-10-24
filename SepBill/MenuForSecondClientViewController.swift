@@ -65,8 +65,6 @@ class MenuForSecondClientViewController: UIViewController, UITableViewDelegate, 
             for (productName, quantity) in savedProductData {
                 if let product = menuProducts.first(where: { $0.productName == productName }) {
                     selectedProducts.append(product)
-                    // Увеличиваем счет на сумму выбранных товаров
-                    client2Bill += product.productPrice * Double(quantity)
                     // Сохраняем количество выбранных товаров
                     productQuantities[product] = quantity
                 }

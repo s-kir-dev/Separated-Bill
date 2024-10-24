@@ -15,7 +15,9 @@ class BillViewController: UIViewController {
     @IBOutlet weak var client3Bill: UILabel!
     @IBOutlet weak var client4Bill: UILabel!
     @IBOutlet weak var tableBill: UILabel!
-    
+    @IBOutlet weak var tipsLabel: UILabel!
+    @IBOutlet weak var totalBillLabel: UILabel!
+
     var tableIndex: IndexPath!
     
     var selectedTableIndex: Int = 0
@@ -26,6 +28,8 @@ class BillViewController: UIViewController {
     var secondProducts: Int = 0
     var thirdProducts: Int = 0
     var fourthProducts: Int = 0
+    var totalBill: Double = 0.00
+    var tipsPercentage: Int = 0
     
     var mainVC: MainViewController!
     
@@ -42,6 +46,7 @@ class BillViewController: UIViewController {
         menuProducts.append(contentsOf: Products.snacks)
         menuProducts.append(contentsOf: Products.desserts)
 
+        // Загрузка сохраненных продуктов для каждого клиента (аналогично вашему коду)
         if let savedProductNames = UserDefaults.standard.array(forKey: "selectedProductsForTable_\(tables[selectedTableIndex])") as? [String] {
             let selectedProducts = menuProducts.filter { savedProductNames.contains($0.productName) }
             allSelectedProducts.append(contentsOf: selectedProducts)
@@ -62,6 +67,8 @@ class BillViewController: UIViewController {
             allSelectedProducts.append(contentsOf: selectedProducts)
             fourthProducts = savedProductNames.count
         }
+        
+        // Установка значений из mainVC и tableIndex
         if let mainVC = mainVC, let tableIndex = tableIndex {
             if let cell = mainVC.tables.cellForRow(at: tableIndex) as? TableEditTableViewCell {
                 tableNumberLabel.text = cell.tableNumberLabel.text
@@ -70,10 +77,26 @@ class BillViewController: UIViewController {
                 client3Bill.text = cell.priceLabel3.text
                 client4Bill.text = cell.priceLabel4.text
                 tableBill.text = cell.tableBillLabel.text
-            } 
+                if let bill = Double(cell.tableBillLabel.text!.replacingOccurrences(of: " р.", with: "")) {
+                    totalBill = bill
+                    totalBillLabel.text = String(format: "%.2f р.", totalBill) // Установка общего счета без чаевых
+                }
+            }
         } else {
             debugPrint("mainVC или tableIndex равен nil")
         }
+    }
+    
+    @IBAction func tipsChanged(_ sender: UISlider) {
+        tipsPercentage = Int(sender.value) // Сохраняем процент чаевых
+        tipsLabel.text = "\(Int(sender.value)) %"
+        calculateTotalBill() // Пересчет итоговой суммы с чаевыми
+    }
+    
+    func calculateTotalBill() {
+        let tipsAmount = totalBill * (Double(tipsPercentage) / 100)
+        let finalBill = totalBill + tipsAmount
+        totalBillLabel.text = String(format: "%.2f р.", finalBill)
     }
     
     @IBAction func backButton(_ segue: UIStoryboardSegue) {
@@ -103,5 +126,4 @@ class BillViewController: UIViewController {
             detailVC.selectedTableIndex = selectedTableIndex
         }
     }
-    
 }

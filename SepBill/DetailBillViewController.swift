@@ -10,7 +10,6 @@ import UIKit
 class DetailBillViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @IBOutlet weak var tableProducts: UITableView!
-    
     @IBOutlet weak var navigationTitle: UINavigationItem!
     
     var allSelectedProducts: [Product] = []
@@ -24,14 +23,14 @@ class DetailBillViewController: UIViewController, UITableViewDelegate, UITableVi
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         navigationTitle.title = "Подробности Стол №\(tables[selectedTableIndex])"
-        loadProductsKolvo(1)
-        loadProductsKolvo(2)
-        loadProductsKolvo(3)
-        loadProductsKolvo(4)
+        loadProductsKolvo(for: 1)
+        loadProductsKolvo(for: 2)
+        loadProductsKolvo(for: 3)
+        loadProductsKolvo(for: 4)
         tableProducts.delegate = self
         tableProducts.dataSource = self
+        
         tableProducts.reloadData()
     }
     
@@ -48,9 +47,16 @@ class DetailBillViewController: UIViewController, UITableViewDelegate, UITableVi
         cell.productImage.image = UIImage(named: product.productImage)
         cell.productPrice.text = "\(product.productPrice) р."
         cell.selectionStyle = .none
+        
         let kolvo = productsKolvo[product] ?? 0
-                cell.kolvoLabel.text = "x\(kolvo)"
+        cell.kolvoLabel.text = "x\(kolvo)"
 
+        setCellBackgroundColor(cell, for: indexPath)
+
+        return cell
+    }
+    
+    private func setCellBackgroundColor(_ cell: DetailBillTableViewCell, for indexPath: IndexPath) {
         if indexPath.row < firstProducts {
             cell.backgroundColor = UIColor(red: 173/255, green: 216/255, blue: 230/255, alpha: 1)
             cell.orderedByLabel.text = "Заказал клиент 1"
@@ -66,22 +72,19 @@ class DetailBillViewController: UIViewController, UITableViewDelegate, UITableVi
         } else {
             cell.backgroundColor = .white
         }
-        
-        return cell
     }
     
-    func loadProductsKolvo(_ client: Int) {
-            if let savedProductData = UserDefaults.standard.dictionary(forKey: "productQuantitiesForTable_\(tables[selectedTableIndex])_client\(client)") as? [String: Int] {
-                for (productName, quantity) in savedProductData {
-                    if let product = allSelectedProducts.first(where: { $0.productName == productName }) {
-                        productsKolvo[product] = quantity
-                    }
+    func loadProductsKolvo(for client: Int) {
+        if let savedProductData = UserDefaults.standard.dictionary(forKey: "productQuantitiesForTable_\(tables[selectedTableIndex])_client\(client)") as? [String: Int] {
+            for (productName, quantity) in savedProductData {
+                if let product = allSelectedProducts.first(where: { $0.productName == productName }) {
+                    productsKolvo[product] = quantity
                 }
             }
         }
+    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return allSelectedProducts.count
     }
 }
-

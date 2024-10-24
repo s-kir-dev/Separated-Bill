@@ -23,6 +23,8 @@ protocol SettingsViewControllerDelegate: AnyObject {
 class MainViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, MainViewControllerDelegate, SettingsViewControllerDelegate, MenuViewControllerDelegate, MenuForSecondClientViewControllerDelegate, MenuForThirdClientViewControllerDelegate, MenuForFourthClientViewControllerDelegate {
     
     @IBOutlet weak var tables: UITableView!
+    @IBOutlet weak var emptyImage: UIImageView!
+
     
     var client1BillFromMenu: [Int: Double] = [:] // Храним общий счет для первого клиента
     var client2BillFromMenu: [Int: Double] = [:]
@@ -53,9 +55,9 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     
     @IBAction func showMenu(_ sender: UIButton) {
-        let buttonPosition = sender.convert(CGPoint.zero, to: tables) // Получаем позицию кнопки в таблице
+        let buttonPosition = sender.convert(CGPoint.zero, to: tables)
         if let indexPath = tables.indexPathForRow(at: buttonPosition) {
-            selectedTableIndex = indexPath.row // Получаем индекс выбранного стола
+            selectedTableIndex = indexPath.row
             performSegue(withIdentifier: "showMenu1", sender: self)
         }
     }
@@ -219,6 +221,11 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
     // MARK: - UITableViewDataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if tableNumbers.count == 0 {
+            emptyImage.isHidden = false
+        } else {
+            emptyImage.isHidden = true
+        }
         return tableNumbers.count
     }
     
