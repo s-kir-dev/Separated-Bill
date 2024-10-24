@@ -24,7 +24,7 @@ class MenuForThirdClientViewController: UIViewController, UITableViewDelegate, U
     var selectedTableIndex: Int = 0 // Хранит индекс выбранного стола
     
     var switchStates: [Int: Bool] = [:] // Словарь для хранения состояния свитчей
-    var selectedRows: Set<Int> = [] // Множество для хранения выделенных строк
+    var productQuantities: [Product: Int] = [:] // Хранит количество выбранных товаров
 
     var client3Bill: Double = 0 {
         didSet {
@@ -40,7 +40,7 @@ class MenuForThirdClientViewController: UIViewController, UITableViewDelegate, U
         // Загружаем продукты в меню
         loadMenuProducts()
 
-        // Загружаем выбранные продукты для третьего клиента
+        // Загружаем выбранные продукты для второго клиента
         loadSelectedProducts()
 
         billLabel.text = "Счет: \(client3Bill) р."
@@ -61,8 +61,16 @@ class MenuForThirdClientViewController: UIViewController, UITableViewDelegate, U
 
     // Загрузка выбранных продуктов из UserDefaults
     func loadSelectedProducts() {
-        if let savedProductNames = UserDefaults.standard.array(forKey: "selectedProductsForThirdClient_\(tables[selectedTableIndex])") as? [String] {
-            selectedProducts = menuProducts.filter { savedProductNames.contains($0.productName) }
+        if let savedProductData = UserDefaults.standard.dictionary(forKey: "productQuantitiesForTable_\(tables[selectedTableIndex])_client3") as? [String: Int] {
+            for (productName, quantity) in savedProductData {
+                if let product = menuProducts.first(where: { $0.productName == productName }) {
+                    selectedProducts.append(product)
+                    // Увеличиваем счет на сумму выбранных товаров
+                    client3Bill += product.productPrice * Double(quantity)
+                    // Сохраняем количество выбранных товаров
+                    productQuantities[product] = quantity
+                }
+            }
         }
     }
 
@@ -70,6 +78,10 @@ class MenuForThirdClientViewController: UIViewController, UITableViewDelegate, U
     func saveSelectedProducts() {
         let selectedProductNames = selectedProducts.map { $0.productName }
         UserDefaults.standard.set(selectedProductNames, forKey: "selectedProductsForThirdClient_\(tables[selectedTableIndex])")
+        
+        // Сохраняем количества
+        let productQuantitiesToSave = productQuantities.mapKeys { $0.productName }
+        UserDefaults.standard.set(productQuantitiesToSave, forKey: "productQuantitiesForTable_\(tables[selectedTableIndex])_client3")
     }
 
     // MARK: - UITableViewDataSource
@@ -110,7 +122,7 @@ class MenuForThirdClientViewController: UIViewController, UITableViewDelegate, U
     }
 
     // MARK: - Продукт выбран/снят выбор
-    @IBAction func selectProduct(_ sender: UISwitch) {
+    @objc func selectProduct(_ sender: UISwitch) {
         let product = menuProducts[sender.tag]
         let cell = menu.cellForRow(at: IndexPath(row: sender.tag, section: 0)) as! ProductTableViewCell
 
@@ -118,20 +130,24 @@ class MenuForThirdClientViewController: UIViewController, UITableViewDelegate, U
         switchStates[sender.tag] = sender.isOn
 
         if sender.isOn {
+            // Добавляем продукт и увеличиваем счет
             selectedProducts.append(product)
-            client3Bill += product.productPrice // Обновляем сумму счета третьего клиента
-            selectedRows.insert(sender.tag)
+            client3Bill += product.productPrice // Обновляем сумму счета второго клиента
+            productQuantities[product] = (productQuantities[product] ?? 0) + 1 // Увеличиваем количество
             cell.backgroundColor = UIColor(red: 0.796, green: 0.874, blue: 0.811, alpha: 1)
         } else {
             if let index = selectedProducts.firstIndex(of: product) {
                 selectedProducts.remove(at: index)
-                client3Bill -= product.productPrice // Уменьшаем сумму счета третьего клиента
-                selectedRows.remove(sender.tag)
-                cell.backgroundColor = selectedProducts.contains(product) ? UIColor(red: 0.796, green: 0.874, blue: 0.811, alpha: 0.5) : .white
+                client3Bill -= product.productPrice // Уменьшаем сумму счета второго клиента
+                productQuantities[product] = max((productQuantities[product] ?? 0) - 1, 0) // Уменьшаем количество
+                if productQuantities[product] == 0 {
+                    productQuantities.removeValue(forKey: product)
+                }
+                cell.backgroundColor = .white
             }
         }
 
-        // Сохраняем состояние после выбора/снятия продукта
+        // Сохраняем выбранные продукты
         saveSelectedProducts()
 
         // Обновляем метку счета при каждом выборе/снятия выбора
@@ -146,3 +162,4 @@ class MenuForThirdClientViewController: UIViewController, UITableViewDelegate, U
         }
     }
 }
+

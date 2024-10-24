@@ -12,7 +12,7 @@ enum Category: Int, Codable {
     case drinksWithoutAlcohol = 1, drinksWithAlcohol, salats, hotMeatDishes, hotFishDisches, soups, desserts, snacks, pasta
 }
 
-struct Product: Codable, Equatable {
+struct Product: Codable, Equatable, Hashable {
     let productImage: String
     let productName: String
     let productDescription: String

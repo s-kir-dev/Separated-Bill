@@ -14,7 +14,7 @@ protocol MenuViewControllerDelegate: AnyObject {
 class MenuViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     weak var delegate: MenuViewControllerDelegate?
-    
+
     @IBOutlet weak var menu: UITableView!
     @IBOutlet weak var billLabel: UILabel!
 
@@ -24,6 +24,7 @@ class MenuViewController: UIViewController, UITableViewDelegate, UITableViewData
     var selectedTableIndex: Int = 0
 
     var switchStates: [Int: Bool] = [:]
+    var productQuantities: [Product: Int] = [:]
 
     var client1Bill: Double = 0 {
         didSet {
@@ -78,18 +79,28 @@ class MenuViewController: UIViewController, UITableViewDelegate, UITableViewData
         let product = menuProducts[sender.tag]
         let cell = menu.cellForRow(at: IndexPath(row: sender.tag, section: 0)) as! ProductTableViewCell
 
-        // Сохраняем состояние свитча
         switchStates[sender.tag] = sender.isOn
 
         if sender.isOn {
-            selectedProducts.append(product)
+            if let quantity = productQuantities[product] {
+                productQuantities[product] = quantity + 1
+            } else {
+                productQuantities[product] = 1
+                selectedProducts.append(product)
+            }
             client1Bill += product.productPrice
             cell.backgroundColor = UIColor(red: 0.796, green: 0.874, blue: 0.811, alpha: 1)
         } else {
-            if let index = selectedProducts.firstIndex(of: product) {
-                selectedProducts.remove(at: index)
+            if let quantity = productQuantities[product], quantity > 1 {
+                productQuantities[product] = quantity - 1
                 client1Bill -= product.productPrice
-                cell.backgroundColor = selectedProducts.contains(product) ? UIColor(red: 0.796, green: 0.874, blue: 0.811, alpha: 0.5) : .white
+            } else {
+                if let index = selectedProducts.firstIndex(of: product) {
+                    selectedProducts.remove(at: index)
+                    productQuantities.removeValue(forKey: product)
+                }
+                client1Bill -= product.productPrice
+                cell.backgroundColor = .white
             }
         }
 
@@ -117,13 +128,31 @@ class MenuViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
 
     func loadSelectedProducts() {
-        if let savedProductNames = UserDefaults.standard.array(forKey: "selectedProductsForTable_\(tables[selectedTableIndex])") as? [String] {
-            selectedProducts = menuProducts.filter { savedProductNames.contains($0.productName) }
+        if let savedProductData = UserDefaults.standard.dictionary(forKey: "productQuantitiesForTable_\(tables[selectedTableIndex])_client1") as? [String: Int] {
+            for (productName, quantity) in savedProductData {
+                if let product = menuProducts.first(where: { $0.productName == productName }) {
+                    selectedProducts.append(product)
+                    productQuantities[product] = quantity
+                }
+            }
         }
     }
 
     func saveSelectedProducts() {
         let selectedProductNames = selectedProducts.map { $0.productName }
         UserDefaults.standard.set(selectedProductNames, forKey: "selectedProductsForTable_\(tables[selectedTableIndex])")
+        
+        let productQuantitiesToSave = productQuantities.mapKeys { $0.productName }
+        UserDefaults.standard.set(productQuantitiesToSave, forKey: "productQuantitiesForTable_\(tables[selectedTableIndex])_client1")
+    }
+}
+
+extension Dictionary {
+    func mapKeys<NewKey>(_ transform: (Key) -> NewKey) -> [NewKey: Value] {
+        var result: [NewKey: Value] = [:]
+        for (key, value) in self {
+            result[transform(key)] = value
+        }
+        return result
     }
 }

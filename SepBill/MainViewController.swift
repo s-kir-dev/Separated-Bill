@@ -154,6 +154,11 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         UserDefaults.standard.removeObject(forKey: "\(keyPrefix)Client3")
         UserDefaults.standard.removeObject(forKey: "\(keyPrefix)Client4")
         
+        UserDefaults.standard.removeObject(forKey: "productQuantitiesForTable_\(tableNumber)_client1")
+        UserDefaults.standard.removeObject(forKey: "productQuantitiesForTable_\(tableNumber)_client2")
+        UserDefaults.standard.removeObject(forKey: "productQuantitiesForTable_\(tableNumber)_client3")
+        UserDefaults.standard.removeObject(forKey: "productQuantitiesForTable_\(tableNumber)_client4")
+        
         // Удаляем общий счет
         UserDefaults.standard.removeObject(forKey: "\(keyPrefix)TotalBill")
         

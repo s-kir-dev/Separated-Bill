@@ -19,6 +19,8 @@ class DetailBillTableViewCell: UITableViewCell {
     
     @IBOutlet weak var productPrice: UILabel!
     
+    @IBOutlet weak var kolvoLabel: UILabel!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         
