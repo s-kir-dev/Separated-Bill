@@ -12,24 +12,28 @@ class DetailBillViewController: UIViewController, UITableViewDelegate, UITableVi
     @IBOutlet weak var tableProducts: UITableView!
     @IBOutlet weak var navigationTitle: UINavigationItem!
     
-    var allSelectedProducts: [Product] = []
     var selectedTableIndex: Int = 0
     var tables = [Int]()
-    var firstProducts: Int = 0
-    var secondProducts: Int = 0
-    var thirdProducts: Int = 0
-    var fourthProducts: Int = 0
-    var productsKolvo: [Product: Int] = [:]
-
+    var productKolvo1: [Product: Int] = [:]
+    var productKolvo2: [Product: Int] = [:]
+    var productKolvo3: [Product: Int] = [:]
+    var productKolvo4: [Product: Int] = [:]
+    
+    var products: [Product] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         navigationTitle.title = "Подробности Стол №\(tables[selectedTableIndex])"
-        loadProductsKolvo(for: 1)
-        loadProductsKolvo(for: 2)
-        loadProductsKolvo(for: 3)
-        loadProductsKolvo(for: 4)
+        
         tableProducts.delegate = self
         tableProducts.dataSource = self
+
+        // Заполняем массивы с продуктами
+        loadProductsKolvo(1)
+        loadProductsKolvo(2)
+        loadProductsKolvo(3)
+        loadProductsKolvo(4)
         
         tableProducts.reloadData()
     }
@@ -40,51 +44,71 @@ class DetailBillViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "selectedProduct", for: indexPath) as! DetailBillTableViewCell
-        let product = allSelectedProducts[indexPath.row]
+        
+        let product: Product
+        let kolvo: Int
+        let clientIndex: Int
+        
+        // Определяем, к какому клиенту относится текущий продукт
+        if indexPath.row < productKolvo1.count {
+            product = Array(productKolvo1.keys)[indexPath.row]
+            kolvo = productKolvo1[product] ?? 0
+            clientIndex = 1
+            cell.backgroundColor = UIColor(red: 173/255, green: 216/255, blue: 230/255, alpha: 1)
+        } else if indexPath.row < productKolvo1.count + productKolvo2.count {
+            product = Array(productKolvo2.keys)[indexPath.row - productKolvo1.count]
+            kolvo = productKolvo2[product] ?? 0
+            clientIndex = 2
+            cell.backgroundColor = UIColor(red: 255/255, green: 182/255, blue: 193/255, alpha: 0.5)
+        } else if indexPath.row < productKolvo1.count + productKolvo2.count + productKolvo3.count {
+            product = Array(productKolvo3.keys)[indexPath.row - (productKolvo1.count + productKolvo2.count)]
+            kolvo = productKolvo3[product] ?? 0
+            clientIndex = 3
+            cell.backgroundColor = UIColor(red: 144/255, green: 0.7, blue: 144/255, alpha: 0.7)
+        } else {
+            product = Array(productKolvo4.keys)[indexPath.row - (productKolvo1.count + productKolvo2.count + productKolvo3.count)]
+            kolvo = productKolvo4[product] ?? 0
+            clientIndex = 4
+            cell.backgroundColor = UIColor(red: 1, green: 1, blue: 224/255, alpha: 1)
+        }
 
+        cell.orderedByLabel.text = "Заказал клиент \(clientIndex)"
         cell.productDescription.text = product.productDescription
         cell.productName.text = product.productName
         cell.productImage.image = UIImage(named: product.productImage)
         cell.productPrice.text = "\(product.productPrice) р."
-        cell.selectionStyle = .none
-        
-        let kolvo = productsKolvo[product] ?? 0
         cell.kolvoLabel.text = "x\(kolvo)"
-
-        setCellBackgroundColor(cell, for: indexPath)
+        cell.selectionStyle = .none
 
         return cell
     }
     
-    private func setCellBackgroundColor(_ cell: DetailBillTableViewCell, for indexPath: IndexPath) {
-        if indexPath.row < firstProducts {
-            cell.backgroundColor = UIColor(red: 173/255, green: 216/255, blue: 230/255, alpha: 1)
-            cell.orderedByLabel.text = "Заказал клиент 1"
-        } else if indexPath.row < firstProducts + secondProducts {
-            cell.backgroundColor = UIColor(red: 255/255, green: 182/255, blue: 193/255, alpha: 0.5)
-            cell.orderedByLabel.text = "Заказал клиент 2"
-        } else if indexPath.row < firstProducts + secondProducts + thirdProducts {
-            cell.backgroundColor = UIColor(red: 144/255, green: 0.7, blue: 144/255, alpha: 0.7)
-            cell.orderedByLabel.text = "Заказал клиент 3"
-        } else if indexPath.row < firstProducts + secondProducts + thirdProducts + fourthProducts {
-            cell.backgroundColor = UIColor(red: 1, green: 1, blue: 224/255, alpha: 1)
-            cell.orderedByLabel.text = "Заказал клиент 4"
-        } else {
-            cell.backgroundColor = .white
-        }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return productKolvo1.count + productKolvo2.count + productKolvo3.count + productKolvo4.count
     }
-    
-    func loadProductsKolvo(for client: Int) {
+
+    func loadProductsKolvo(_ client: Int) {
         if let savedProductData = UserDefaults.standard.dictionary(forKey: "productQuantitiesForTable_\(tables[selectedTableIndex])_client\(client)") as? [String: Int] {
             for (productName, quantity) in savedProductData {
-                if let product = allSelectedProducts.first(where: { $0.productName == productName }) {
-                    productsKolvo[product] = quantity
+                if let product = findProductByName(productName) {
+                    switch client {
+                    case 1:
+                        productKolvo1[product] = quantity
+                    case 2:
+                        productKolvo2[product] = quantity
+                    case 3:
+                        productKolvo3[product] = quantity
+                    case 4:
+                        productKolvo4[product] = quantity
+                    default:
+                        break
+                    }
                 }
             }
         }
     }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return allSelectedProducts.count
+
+    func findProductByName(_ name: String) -> Product? {
+        return products.first { $0.productName == name }
     }
 }

@@ -82,15 +82,15 @@ class MenuViewController: UIViewController, UITableViewDelegate, UITableViewData
         switchStates[sender.tag] = sender.isOn
 
         if sender.isOn {
-            // Увеличиваем количество товара
-            productQuantities[product, default: 0] += 1
-            if !selectedProducts.contains(product) {
+            if let quantity = productQuantities[product] {
+                productQuantities[product] = quantity + 1
+            } else {
+                productQuantities[product] = 1
                 selectedProducts.append(product)
             }
             client1Bill += product.productPrice
             cell.backgroundColor = UIColor(red: 0.796, green: 0.874, blue: 0.811, alpha: 1)
         } else {
-            // Уменьшаем количество товара
             if let quantity = productQuantities[product], quantity > 1 {
                 productQuantities[product] = quantity - 1
                 client1Bill -= product.productPrice
@@ -105,6 +105,7 @@ class MenuViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
 
         billLabel.text = "Счет: \(client1Bill) р."
+
         saveSelectedProducts()
     }
 
@@ -138,9 +139,20 @@ class MenuViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
 
     func saveSelectedProducts() {
-        let selectedProductData: [String: Int] = selectedProducts.reduce(into: [:]) { result, product in
-            result[product.productName] = productQuantities[product]
+        let selectedProductNames = selectedProducts.map { $0.productName }
+        UserDefaults.standard.set(selectedProductNames, forKey: "selectedProductsForTable_\(tables[selectedTableIndex])")
+        
+        let productQuantitiesToSave = productQuantities.mapKeys { $0.productName }
+        UserDefaults.standard.set(productQuantitiesToSave, forKey: "productQuantitiesForTable_\(tables[selectedTableIndex])_client1")
+    }
+}
+
+extension Dictionary {
+    func mapKeys<NewKey>(_ transform: (Key) -> NewKey) -> [NewKey: Value] {
+        var result: [NewKey: Value] = [:]
+        for (key, value) in self {
+            result[transform(key)] = value
         }
-        UserDefaults.standard.set(selectedProductData, forKey: "productQuantitiesForTable_\(tables[selectedTableIndex])_client1")
+        return result
     }
 }
