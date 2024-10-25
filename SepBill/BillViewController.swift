@@ -30,7 +30,11 @@ class BillViewController: UIViewController {
     var fourthProducts: Int = 0
     var totalBill: Double = 0.00
     var tipsPercentage: Int = 0
-    
+    var selectedProducts1: [Product: Int] = [:]
+    var selectedProducts2: [Product: Int] = [:]
+    var selectedProducts3: [Product: Int] = [:]
+    var selectedProducts4: [Product: Int] = [:]
+
     var mainVC: MainViewController!
     
     override func viewDidLoad() {
@@ -46,29 +50,8 @@ class BillViewController: UIViewController {
         menuProducts.append(contentsOf: Products.snacks)
         menuProducts.append(contentsOf: Products.desserts)
 
-        // Загрузка сохраненных продуктов для каждого клиента (аналогично вашему коду)
-        if let savedProductNames = UserDefaults.standard.array(forKey: "selectedProductsForTable_\(tables[selectedTableIndex])") as? [String] {
-            let selectedProducts = menuProducts.filter { savedProductNames.contains($0.productName) }
-            allSelectedProducts.append(contentsOf: selectedProducts)
-            firstProducts = savedProductNames.count
-        }
-        if let savedProductNames = UserDefaults.standard.array(forKey: "selectedProductsForSecondClient_\(tables[selectedTableIndex])") as? [String] {
-            let selectedProducts = menuProducts.filter { savedProductNames.contains($0.productName) }
-            allSelectedProducts.append(contentsOf: selectedProducts)
-            secondProducts = savedProductNames.count
-        }
-        if let savedProductNames = UserDefaults.standard.array(forKey: "selectedProductsForThirdClient_\(tables[selectedTableIndex])") as? [String] {
-            let selectedProducts = menuProducts.filter { savedProductNames.contains($0.productName) }
-            allSelectedProducts.append(contentsOf: selectedProducts)
-            thirdProducts = savedProductNames.count
-        }
-        if let savedProductNames = UserDefaults.standard.array(forKey: "selectedProductsForFourthClient_\(tables[selectedTableIndex])") as? [String] {
-            let selectedProducts = menuProducts.filter { savedProductNames.contains($0.productName) }
-            allSelectedProducts.append(contentsOf: selectedProducts)
-            fourthProducts = savedProductNames.count
-        }
+        loadSelectedProducts()
         
-        // Установка значений из mainVC и tableIndex
         if let mainVC = mainVC, let tableIndex = tableIndex {
             if let cell = mainVC.tables.cellForRow(at: tableIndex) as? TableEditTableViewCell {
                 tableNumberLabel.text = cell.tableNumberLabel.text
@@ -79,18 +62,20 @@ class BillViewController: UIViewController {
                 tableBill.text = cell.tableBillLabel.text
                 if let bill = Double(cell.tableBillLabel.text!.replacingOccurrences(of: " р.", with: "")) {
                     totalBill = bill
-                    totalBillLabel.text = String(format: "%.2f р.", totalBill) // Установка общего счета без чаевых
+                    totalBillLabel.text = String(format: "%.2f р.", totalBill)
                 }
             }
         } else {
             debugPrint("mainVC или tableIndex равен nil")
         }
+        
+        debugPrint("\(selectedProducts1), \(selectedProducts2), \(selectedProducts3), \(selectedProducts4)")
     }
     
     @IBAction func tipsChanged(_ sender: UISlider) {
-        tipsPercentage = Int(sender.value) // Сохраняем процент чаевых
+        tipsPercentage = Int(sender.value)
         tipsLabel.text = "\(Int(sender.value)) %"
-        calculateTotalBill() // Пересчет итоговой суммы с чаевыми
+        calculateTotalBill()
     }
     
     func calculateTotalBill() {
@@ -104,6 +89,13 @@ class BillViewController: UIViewController {
     }
     
     @IBAction func doneButton(_ sender: UIButton) {
+        for clientIndex in 1...4 {
+            UserDefaults.standard.removeObject(forKey: "productQuantitiesForTable_\(tables[selectedTableIndex])_client\(clientIndex)")
+        }
+        
+        mainVC.deleteTable(at: tableIndex.row)
+        mainVC.tables.reloadData()
+        
         allSelectedProducts.removeAll()
         firstProducts = 0
         secondProducts = 0
@@ -111,19 +103,47 @@ class BillViewController: UIViewController {
         fourthProducts = 0
         tables.removeAll()
         selectedTableIndex = 0
+        tableIndex.row = 0
+        
         self.dismiss(animated: true)
         debugPrint("Все очистилось")
+        
+        mainVC.loadBills()
+    }
+
+    func loadSelectedProducts() {
+        for clientIndex in 1...4 {
+            let key = "productQuantitiesForTable_\(tables[selectedTableIndex])_client\(clientIndex)"
+            if let savedProductData = UserDefaults.standard.dictionary(forKey: key) as? [String: Int] {
+                for (productName, quantity) in savedProductData {
+                    if let product = menuProducts.first(where: { $0.productName == productName }) {
+                        switch clientIndex {
+                        case 1:
+                            selectedProducts1[product] = quantity
+                        case 2:
+                            selectedProducts2[product] = quantity
+                        case 3:
+                            selectedProducts3[product] = quantity
+                        case 4:
+                            selectedProducts4[product] = quantity
+                        default:
+                            break
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let detailVC = segue.destination as? DetailBillViewController {
-            detailVC.allSelectedProducts = allSelectedProducts
-            detailVC.firstProducts = firstProducts
-            detailVC.secondProducts = secondProducts
-            detailVC.thirdProducts = thirdProducts
-            detailVC.fourthProducts = fourthProducts
             detailVC.tables = tables
             detailVC.selectedTableIndex = selectedTableIndex
+            
+            detailVC.productKolvo1 = selectedProducts1
+            detailVC.productKolvo2 = selectedProducts2
+            detailVC.productKolvo3 = selectedProducts3
+            detailVC.productKolvo4 = selectedProducts4
         }
     }
 }

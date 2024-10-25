@@ -7,7 +7,6 @@
 
 import UIKit
 
-// Протокол для делегата, отвечающего за обновление счета первого клиента
 protocol MainViewControllerDelegate: AnyObject {
     func updateBill(for tableNumber: Int, with client1Bill: Double)
     func updateSecondClientBill(for tableNumber: Int, with client2Bill: Double)
