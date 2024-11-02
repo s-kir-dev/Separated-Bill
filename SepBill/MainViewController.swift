@@ -272,9 +272,49 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             completionHandler(true)
         }
         
-        deleteAction.backgroundColor = .red
+        deleteAction.backgroundColor = .red.withAlphaComponent(0.9)
         deleteAction.image = UIImage(systemName: "trash")
         
+        let updatePeopleCountAction = UIContextualAction(style: .normal, title: "Изменить") { (action, view, completionHandler) in
+            let tableNumber = self.tableNumbers[indexPath.row]
+            
+            let alert = UIAlertController(title: "Изменить количество людей", message: "Введите новое количество людей за столом", preferredStyle: .alert)
+            alert.addTextField { (textField) in
+                textField.placeholder = "Количество людей"
+                textField.keyboardType = .numberPad
+            }
+            
+            let saveAction = UIAlertAction(title: "Сохранить", style: .default) { (_) in
+                if let countText = alert.textFields?.first?.text, let count = Int(countText) {
+                        if count >= 1 && count <= 6 {
+                            self.didUpdatePersonsCount(count, forTable: tableNumber)
+                            
+                            self.tablePersonsCount[tableNumber] = count
+                            
+                            if let savedPersonsCountData = try? JSONEncoder().encode(self.tablePersonsCount) {
+                                UserDefaults.standard.set(savedPersonsCountData, forKey: "tablePersonsCount")
+                            }
+                        } else {
+                            let errorAlert = UIAlertController(title: "Ошибка", message: "Количество людей должно быть от 1 до 6.", preferredStyle: .alert)
+                            errorAlert.addAction(UIAlertAction(title: "Ок", style: .default, handler: nil))
+                            self.present(errorAlert, animated: true, completion: nil)
+                        }
+                }
+            }
+            
+            let cancelAction = UIAlertAction(title: "Отмена", style: .cancel, handler: nil)
+            
+            alert.addAction(saveAction)
+            alert.addAction(cancelAction)
+            
+            self.present(alert, animated: true, completion: nil)
+            completionHandler(true)
+        }
+
+        updatePeopleCountAction.backgroundColor = .purple.withAlphaComponent(0.5)
+        updatePeopleCountAction.image = UIImage(systemName: "square.and.pencil")
+            
+
         let billAction = UIContextualAction(style: .normal, title: "Чек") { (action, view, completionHandler) in
             DispatchQueue.main.async {
                 self.performSegue(withIdentifier: "billVC", sender: indexPath)
@@ -282,10 +322,10 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             completionHandler(true)
         }
         
-        billAction.backgroundColor = .systemMint
+        billAction.backgroundColor = .systemMint.withAlphaComponent(0.95)
         billAction.image = UIImage(systemName: "wallet.pass")
         
-        let configuration = UISwipeActionsConfiguration(actions: [deleteAction, billAction])
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction, updatePeopleCountAction, billAction])
         configuration.performsFirstActionWithFullSwipe = false
         return configuration
     }

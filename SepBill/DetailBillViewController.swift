@@ -82,7 +82,7 @@ class DetailBillViewController: UIViewController, UITableViewDelegate, UITableVi
             product = Array(productKolvo6.keys)[indexPath.row - (productKolvo1.count + productKolvo2.count + productKolvo3.count + productKolvo4.count + productKolvo5.count)]
             kolvo = productKolvo6[product] ?? 0
             clientIndex = 6
-            cell.backgroundColor = UIColor(red: 224/255, green: 224/255, blue: 224/255, alpha: 1)
+            cell.backgroundColor = UIColor(red: 1, green: 224/255, blue: 1, alpha: 1)
         }
 
         cell.orderedByLabel.text = "Заказал клиент \(clientIndex)"
