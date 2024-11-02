@@ -12,6 +12,8 @@ protocol MainViewControllerDelegate: AnyObject {
     func updateSecondClientBill(for tableNumber: Int, with client2Bill: Double)
     func updateThirdClientBill(for tableNumber: Int, with client3Bill: Double)
     func updateFourthClientBill(for tableNumber: Int, with client4Bill: Double)
+    func updateFifthClientBill(for tableNumber: Int, with client5Bill: Double)
+    func updateSixthClientBill(for tableNumber: Int, with client6Bill: Double)
 }
 
 protocol SettingsViewControllerDelegate: AnyObject {
@@ -19,7 +21,8 @@ protocol SettingsViewControllerDelegate: AnyObject {
     func didUpdatePersonsCount(_ personsCount: Int, forTable tableNumber: Int)
 }
 
-class MainViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, MainViewControllerDelegate, SettingsViewControllerDelegate, MenuViewControllerDelegate, MenuForSecondClientViewControllerDelegate, MenuForThirdClientViewControllerDelegate, MenuForFourthClientViewControllerDelegate {
+class MainViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, MainViewControllerDelegate, SettingsViewControllerDelegate, MenuViewControllerDelegate, MenuForSecondClientViewControllerDelegate, MenuForThirdClientViewControllerDelegate, MenuForFourthClientViewControllerDelegate, MenuForFifthClientViewControllerDelegate, MenuForSixthClientViewControllerDelegate {
+    
     
     @IBOutlet weak var tables: UITableView!
     @IBOutlet weak var emptyImage: UIImageView!
@@ -29,6 +32,8 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     var client2BillFromMenu: [Int: Double] = [:]
     var client3BillFromMenu: [Int: Double] = [:]
     var client4BillFromMenu: [Int: Double] = [:]
+    var client5BillFromMenu: [Int: Double] = [:]
+    var client6BillFromMenu: [Int: Double] = [:]
     var totalPrices: [Int: Double] = [:]
     var tableNumbers: [Int] = []
     var tablePersonsCount: [Int: Int] = [:] // Для хранения количества людей за каждым столом
@@ -85,6 +90,22 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
     }
     
+    @IBAction func showMenu5(_ sender: UIButton) {
+        let buttonPosition = sender.convert(CGPoint.zero, to: tables)
+        if let indexPath = tables.indexPathForRow(at: buttonPosition) {
+            selectedTableIndex = indexPath.row
+            performSegue(withIdentifier: "showMenu5", sender: self)
+        }
+    }
+    
+    @IBAction func showMenu6(_ sender: UIButton) {
+        let buttonPosition = sender.convert(CGPoint.zero, to: tables)
+        if let indexPath = tables.indexPathForRow(at: buttonPosition) {
+            selectedTableIndex = indexPath.row
+            performSegue(withIdentifier: "showMenu6", sender: self)
+        }
+    }
+    
 
     // MARK: - Life Cycle
     override func viewDidLoad() {
@@ -117,13 +138,11 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             client2BillFromMenu[tableNumber] = UserDefaults.standard.double(forKey: "\(keyPrefix)Client2")
             client3BillFromMenu[tableNumber] = UserDefaults.standard.double(forKey: "\(keyPrefix)Client3")
             client4BillFromMenu[tableNumber] = UserDefaults.standard.double(forKey: "\(keyPrefix)Client4")
+            client5BillFromMenu[tableNumber] = UserDefaults.standard.double(forKey: "\(keyPrefix)Client5")
+            client6BillFromMenu[tableNumber] = UserDefaults.standard.double(forKey: "\(keyPrefix)Client6")
             
             // Вычисляем общий счёт за стол
-            let totalBill = (client1BillFromMenu[tableNumber] ?? 0.00) +
-                            (client2BillFromMenu[tableNumber] ?? 0.00) +
-                            (client3BillFromMenu[tableNumber] ?? 0.00) +
-                            (client4BillFromMenu[tableNumber] ?? 0.00)
-            
+            let totalBill = updateTotalBill(for: tableNumber)
             totalPrices[tableNumber] = totalBill
             UserDefaults.standard.set(totalBill, forKey: "\(keyPrefix)TotalBill")
         }
@@ -137,12 +156,11 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         UserDefaults.standard.set(client2BillFromMenu[tableNumber], forKey: "\(keyPrefix)Client2")
         UserDefaults.standard.set(client3BillFromMenu[tableNumber], forKey: "\(keyPrefix)Client3")
         UserDefaults.standard.set(client4BillFromMenu[tableNumber], forKey: "\(keyPrefix)Client4")
+        UserDefaults.standard.set(client5BillFromMenu[tableNumber], forKey: "\(keyPrefix)Client5")
+        UserDefaults.standard.set(client6BillFromMenu[tableNumber], forKey: "\(keyPrefix)Client6")
         
         // Сохраняем общий счет
-        let totalBill = (client1BillFromMenu[tableNumber] ?? 0.00) +
-                        (client2BillFromMenu[tableNumber] ?? 0.00) +
-                        (client3BillFromMenu[tableNumber] ?? 0.00) +
-                        (client4BillFromMenu[tableNumber] ?? 0.00)
+        let totalBill = updateTotalBill(for: tableNumber)
         UserDefaults.standard.set(totalBill, forKey: "\(keyPrefix)TotalBill")
     }
     
@@ -154,11 +172,16 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         UserDefaults.standard.removeObject(forKey: "\(keyPrefix)Client2")
         UserDefaults.standard.removeObject(forKey: "\(keyPrefix)Client3")
         UserDefaults.standard.removeObject(forKey: "\(keyPrefix)Client4")
-        
+        UserDefaults.standard.removeObject(forKey: "\(keyPrefix)Client5")
+        UserDefaults.standard.removeObject(forKey: "\(keyPrefix)Client6")
+
         UserDefaults.standard.removeObject(forKey: "productQuantitiesForTable_\(tableNumber)_client1")
         UserDefaults.standard.removeObject(forKey: "productQuantitiesForTable_\(tableNumber)_client2")
         UserDefaults.standard.removeObject(forKey: "productQuantitiesForTable_\(tableNumber)_client3")
         UserDefaults.standard.removeObject(forKey: "productQuantitiesForTable_\(tableNumber)_client4")
+        UserDefaults.standard.removeObject(forKey: "productQuantitiesForTable_\(tableNumber)_client5")
+        UserDefaults.standard.removeObject(forKey: "productQuantitiesForTable_\(tableNumber)_client6")
+
         
         // Удаляем общий счет
         UserDefaults.standard.removeObject(forKey: "\(keyPrefix)TotalBill")
@@ -182,6 +205,9 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         UserDefaults.standard.removeObject(forKey: "selectedProductsForSecondClient_\(tableNumber)")
         UserDefaults.standard.removeObject(forKey: "selectedProductsForThirdClient_\(tableNumber)")
         UserDefaults.standard.removeObject(forKey: "selectedProductsForFourthClient_\(tableNumber)")
+        UserDefaults.standard.removeObject(forKey: "selectedProductsForFifthClient_\(tableNumber)")
+        UserDefaults.standard.removeObject(forKey: "selectedProductsForSixthClient_\(tableNumber)")
+
     }
     
     @IBAction func backToMain(_ segue: UIStoryboardSegue) {
@@ -205,6 +231,16 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             let currentBill = client4BillFromMenu[selectedTable] ?? 0.00
             let newBill = menu4VC.client4Bill
             updateFourthClientBill(for: selectedTable, with: currentBill + newBill)
+        } else if let menu5VC = segue.source as? MenuForFifthViewController {
+            let selectedTable = tableNumbers[selectedTableIndex]
+            let currentBill = client5BillFromMenu[selectedTable] ?? 0.00
+            let newBill = menu5VC.client5Bill
+            updateFifthClientBill(for: selectedTable, with: currentBill + newBill)
+        } else if let menu6VC = segue.source as? MenuForSixthViewController {
+            let selectedTable = tableNumbers[selectedTableIndex]
+            let currentBill = client6BillFromMenu[selectedTable] ?? 0.00
+            let newBill = menu6VC.client6Bill
+            updateSixthClientBill(for: selectedTable, with: currentBill + newBill)
         }
         
         debugPrint("На основном экране")
@@ -263,6 +299,9 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         let client2Bill = client2BillFromMenu[tableNumber] ?? 0.00
         let client3Bill = client3BillFromMenu[tableNumber] ?? 0.00
         let client4Bill = client4BillFromMenu[tableNumber] ?? 0.00
+        let client5Bill = client5BillFromMenu[tableNumber] ?? 0.00
+        let client6Bill = client6BillFromMenu[tableNumber] ?? 0.00
+
                 
         tableIndexMap[tableNumber] = indexPath.row
         
@@ -271,6 +310,9 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         cell.priceLabel2.text = "\(client2Bill) р."
         cell.priceLabel3.text = "\(client3Bill) р."
         cell.priceLabel4.text = "\(client4Bill) р."
+        cell.priceLabel5.text = "\(client5Bill) р."
+        cell.priceLabel6.text = "\(client6Bill) р."
+
         cell.tableBillLabel.text = "\(totalPrices[tableNumber] ?? 0.00) р."
         cell.didUpdatePersonsCount(personsCount)
 
@@ -279,7 +321,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     // MARK: - UITableViewDelegate
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 177
+        return 264
     }
     
     // MARK: - MainViewControllerDelegate
@@ -288,7 +330,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             let indexPath = IndexPath(row: rowIndex, section: 0)
             if let cell = tables.cellForRow(at: indexPath) as? TableEditTableViewCell {
                 client1BillFromMenu[tableNumber] = client1Bill
-                let totalBill = (client1BillFromMenu[tableNumber] ?? 0.00) + (client2BillFromMenu[tableNumber] ?? 0.00) + (client3BillFromMenu[tableNumber] ?? 0.00) + (client4BillFromMenu[tableNumber] ?? 0.00)
+                let totalBill = updateTotalBill(for: tableNumber)
                 cell.priceLabel1.text = "\(client1Bill) р."
                 cell.tableBillLabel.text = "\(totalBill) р."
                 saveBillToUserDefaults(for: tableNumber)
@@ -303,7 +345,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             let indexPath = IndexPath(row: rowIndex, section: 0)
             if let cell = tables.cellForRow(at: indexPath) as? TableEditTableViewCell {
                 client2BillFromMenu[tableNumber] = client2Bill
-                let totalBill = (client1BillFromMenu[tableNumber] ?? 0.00) + (client2BillFromMenu[tableNumber] ?? 0.00) + (client3BillFromMenu[tableNumber] ?? 0.00) + (client4BillFromMenu[tableNumber] ?? 0.00)
+                let totalBill = updateTotalBill(for: tableNumber)
                 cell.priceLabel2.text = "\(client2Bill) р."
                 cell.tableBillLabel.text = "\(totalBill) р."
                 saveBillToUserDefaults(for: tableNumber)
@@ -316,7 +358,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             let indexPath = IndexPath(row: rowIndex, section: 0)
             if let cell = tables.cellForRow(at: indexPath) as? TableEditTableViewCell {
                 client3BillFromMenu[tableNumber] = client3Bill
-                let totalBill = (client1BillFromMenu[tableNumber] ?? 0.00) + (client2BillFromMenu[tableNumber] ?? 0.00) + (client3BillFromMenu[tableNumber] ?? 0.00) + (client4BillFromMenu[tableNumber] ?? 0.00)
+                let totalBill = updateTotalBill(for: tableNumber)
                 cell.priceLabel3.text = "\(client3Bill) р."
                 cell.tableBillLabel.text = "\(totalBill) р."
                 saveBillToUserDefaults(for: tableNumber)
@@ -329,12 +371,50 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             let indexPath = IndexPath(row: rowIndex, section: 0)
             if let cell = tables.cellForRow(at: indexPath) as? TableEditTableViewCell {
                 client4BillFromMenu[tableNumber] = client4Bill
-                let totalBill = (client1BillFromMenu[tableNumber] ?? 0.00) + (client2BillFromMenu[tableNumber] ?? 0.00) + (client3BillFromMenu[tableNumber] ?? 0.00) + (client4BillFromMenu[tableNumber] ?? 0.00)
+                let totalBill = updateTotalBill(for: tableNumber)
                 cell.priceLabel4.text = "\(client4Bill) р."
                 cell.tableBillLabel.text = "\(totalBill) р."
                 saveBillToUserDefaults(for: tableNumber)
             }
         }
+    }
+    
+    func updateFifthClientBill(for tableNumber: Int, with client5Bill: Double) {
+        if let rowIndex = tableIndexMap[tableNumber] {
+            let indexPath = IndexPath(row: rowIndex, section: 0)
+            if let cell = tables.cellForRow(at: indexPath) as? TableEditTableViewCell {
+                client5BillFromMenu[tableNumber] = client5Bill
+                let totalBill = updateTotalBill(for: tableNumber)
+                cell.priceLabel5.text = "\(client5Bill) р."
+                cell.tableBillLabel.text = "\(totalBill) р."
+                saveBillToUserDefaults(for: tableNumber)
+            }
+        }
+    }
+    
+    func updateSixthClientBill(for tableNumber: Int, with client6Bill: Double) {
+        if let rowIndex = tableIndexMap[tableNumber] {
+            let indexPath = IndexPath(row: rowIndex, section: 0)
+            if let cell = tables.cellForRow(at: indexPath) as? TableEditTableViewCell {
+                client6BillFromMenu[tableNumber] = client6Bill
+                let totalBill = updateTotalBill(for: tableNumber)
+                cell.priceLabel6.text = "\(client6Bill) р."
+                cell.tableBillLabel.text = "\(totalBill) р."
+                saveBillToUserDefaults(for: tableNumber)
+            }
+        }
+    }
+
+    func updateTotalBill(for tableNumber: Int) -> Double {
+        let bill1 = client1BillFromMenu[tableNumber] ?? 0.00
+        let bill2 = client2BillFromMenu[tableNumber] ?? 0.00
+        let bill3 = client3BillFromMenu[tableNumber] ?? 0.00
+        let bill4 = client4BillFromMenu[tableNumber] ?? 0.00
+        let bill5 = client5BillFromMenu[tableNumber] ?? 0.00
+        let bill6 = client6BillFromMenu[tableNumber] ?? 0.00
+        
+        totalPrices[tableNumber] = bill1 + bill2 + bill3 + bill4 + bill5 + bill6
+        return totalPrices[tableNumber] ?? 0.00
     }
     
     func deleteTable(at index: Int) {
@@ -348,6 +428,8 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         client2BillFromMenu.removeValue(forKey: tableNumber)
         client3BillFromMenu.removeValue(forKey: tableNumber)
         client4BillFromMenu.removeValue(forKey: tableNumber)
+        client5BillFromMenu.removeValue(forKey: tableNumber)
+        client6BillFromMenu.removeValue(forKey: tableNumber)
         totalPrices.removeValue(forKey: tableNumber)
         
         // Удаляем стол из списка столов
@@ -377,6 +459,16 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             menu4VC.delegate = self
             menu4VC.tables = tableNumbers
             menu4VC.selectedTableIndex = selectedTableIndex
+        }
+        if segue.identifier == "showMenu5", let menu5VC = segue.destination as? MenuForFifthViewController {
+            menu5VC.delegate = self
+            menu5VC.tables = tableNumbers
+            menu5VC.selectedTableIndex = selectedTableIndex
+        }
+        if segue.identifier == "showMenu6", let menu6VC = segue.destination as? MenuForSixthViewController {
+            menu6VC.delegate = self
+            menu6VC.tables = tableNumbers
+            menu6VC.selectedTableIndex = selectedTableIndex
         }
         if segue.identifier == "billVC", let billVC = segue.destination as? BillViewController {
             if let indexPath = sender as? IndexPath {

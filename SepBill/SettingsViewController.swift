@@ -64,10 +64,10 @@ class SettingsViewController: UIViewController {
     func validatePersonsCount() -> Bool {
         var bool = false
         if let text = personsCountField.text, let count = Int(text) {
-            if count > 0 && count <= 4 {
+            if count > 0 && count <= 6 {
                 bool = true
             } else {
-                let message = "Введите количество человек от 1 до 4"
+                let message = "Введите количество человек от 1 до 6"
                 showAlert(title: "Перебор!", message: message)
                 bool = false
             }
