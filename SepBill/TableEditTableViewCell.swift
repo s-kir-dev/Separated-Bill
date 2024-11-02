@@ -18,11 +18,15 @@ class TableEditTableViewCell: UITableViewCell {
     @IBOutlet weak var client2Button: UIButton!
     @IBOutlet weak var client3Button: UIButton!
     @IBOutlet weak var client4Button: UIButton!
+    @IBOutlet weak var client5Button: UIButton!
+    @IBOutlet weak var client6Button: UIButton!
 
     @IBOutlet weak var priceLabel1: UILabel!
     @IBOutlet weak var priceLabel2: UILabel!
     @IBOutlet weak var priceLabel3: UILabel!
     @IBOutlet weak var priceLabel4: UILabel!
+    @IBOutlet weak var priceLabel5: UILabel!
+    @IBOutlet weak var priceLabel6: UILabel!
 
     // MARK: - Properties
     var clients: [UIButton] = []
@@ -34,8 +38,8 @@ class TableEditTableViewCell: UITableViewCell {
         super.awakeFromNib()
 
         // Собираем массивы для кнопок клиентов и их меток цены
-        clients = [client1Button, client2Button, client3Button, client4Button]
-        priceLabels = [priceLabel1, priceLabel2, priceLabel3, priceLabel4]
+        clients = [client1Button, client2Button, client3Button, client4Button, client5Button, client6Button]
+        priceLabels = [priceLabel1, priceLabel2, priceLabel3, priceLabel4, priceLabel5, priceLabel6]
 
         // Отключаем выделение ячейки
         self.selectionStyle = .none
@@ -47,7 +51,7 @@ class TableEditTableViewCell: UITableViewCell {
     // MARK: - UI Update Methods
     func updateUIForClients() {
         print("Updating UI for \(personCount) clients") // Debugging
-        for i in 0..<4 {
+        for i in 0..<6 {
             if i < personCount {
                 clients[i].isHidden = false
                 priceLabels[i].isHidden = false

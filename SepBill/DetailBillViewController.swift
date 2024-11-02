@@ -18,7 +18,9 @@ class DetailBillViewController: UIViewController, UITableViewDelegate, UITableVi
     var productKolvo2: [Product: Int] = [:]
     var productKolvo3: [Product: Int] = [:]
     var productKolvo4: [Product: Int] = [:]
-    
+    var productKolvo5: [Product: Int] = [:]
+    var productKolvo6: [Product: Int] = [:]
+
     var products: [Product] = []
     
     override func viewDidLoad() {
@@ -29,12 +31,13 @@ class DetailBillViewController: UIViewController, UITableViewDelegate, UITableVi
         tableProducts.delegate = self
         tableProducts.dataSource = self
 
-        // Заполняем массивы с продуктами
         loadProductsKolvo(1)
         loadProductsKolvo(2)
         loadProductsKolvo(3)
         loadProductsKolvo(4)
-        
+        loadProductsKolvo(5)
+        loadProductsKolvo(6)
+
         tableProducts.reloadData()
     }
     
@@ -65,11 +68,21 @@ class DetailBillViewController: UIViewController, UITableViewDelegate, UITableVi
             kolvo = productKolvo3[product] ?? 0
             clientIndex = 3
             cell.backgroundColor = UIColor(red: 144/255, green: 0.7, blue: 144/255, alpha: 0.7)
-        } else {
+        } else if indexPath.row < productKolvo1.count + productKolvo2.count + productKolvo3.count + productKolvo4.count  {
             product = Array(productKolvo4.keys)[indexPath.row - (productKolvo1.count + productKolvo2.count + productKolvo3.count)]
             kolvo = productKolvo4[product] ?? 0
             clientIndex = 4
             cell.backgroundColor = UIColor(red: 1, green: 1, blue: 224/255, alpha: 1)
+        } else if indexPath.row < productKolvo1.count + productKolvo2.count + productKolvo3.count + productKolvo4.count + productKolvo5.count {
+            product = Array(productKolvo5.keys)[indexPath.row - (productKolvo1.count + productKolvo2.count + productKolvo3.count + productKolvo4.count)]
+            kolvo = productKolvo5[product] ?? 0
+            clientIndex = 5
+            cell.backgroundColor = UIColor(red: 224/255, green: 1, blue: 224/255, alpha: 1)
+        } else {
+            product = Array(productKolvo6.keys)[indexPath.row - (productKolvo1.count + productKolvo2.count + productKolvo3.count + productKolvo4.count + productKolvo5.count)]
+            kolvo = productKolvo6[product] ?? 0
+            clientIndex = 6
+            cell.backgroundColor = UIColor(red: 224/255, green: 224/255, blue: 224/255, alpha: 1)
         }
 
         cell.orderedByLabel.text = "Заказал клиент \(clientIndex)"
@@ -84,7 +97,7 @@ class DetailBillViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return productKolvo1.count + productKolvo2.count + productKolvo3.count + productKolvo4.count
+        return productKolvo1.count + productKolvo2.count + productKolvo3.count + productKolvo4.count + productKolvo5.count + productKolvo6.count
     }
 
     func loadProductsKolvo(_ client: Int) {
@@ -100,6 +113,10 @@ class DetailBillViewController: UIViewController, UITableViewDelegate, UITableVi
                         productKolvo3[product] = quantity
                     case 4:
                         productKolvo4[product] = quantity
+                    case 5:
+                        productKolvo5[product] = quantity
+                    case 6:
+                        productKolvo6[product] = quantity
                     default:
                         break
                     }

@@ -14,6 +14,8 @@ class BillViewController: UIViewController {
     @IBOutlet weak var client2Bill: UILabel!
     @IBOutlet weak var client3Bill: UILabel!
     @IBOutlet weak var client4Bill: UILabel!
+    @IBOutlet weak var client5Bill: UILabel!
+    @IBOutlet weak var client6Bill: UILabel!
     @IBOutlet weak var tableBill: UILabel!
     @IBOutlet weak var tipsLabel: UILabel!
     @IBOutlet weak var totalBillLabel: UILabel!
@@ -28,12 +30,16 @@ class BillViewController: UIViewController {
     var secondProducts: Int = 0
     var thirdProducts: Int = 0
     var fourthProducts: Int = 0
+    var fifthProducts: Int = 0
+    var sixthProducts: Int = 0
     var totalBill: Double = 0.00
     var tipsPercentage: Int = 0
     var selectedProducts1: [Product: Int] = [:]
     var selectedProducts2: [Product: Int] = [:]
     var selectedProducts3: [Product: Int] = [:]
     var selectedProducts4: [Product: Int] = [:]
+    var selectedProducts5: [Product: Int] = [:]
+    var selectedProducts6: [Product: Int] = [:]
 
     var mainVC: MainViewController!
     
@@ -59,6 +65,8 @@ class BillViewController: UIViewController {
                 client2Bill.text = cell.priceLabel2.text
                 client3Bill.text = cell.priceLabel3.text
                 client4Bill.text = cell.priceLabel4.text
+                client5Bill.text = cell.priceLabel5.text
+                client6Bill.text = cell.priceLabel6.text
                 tableBill.text = cell.tableBillLabel.text
                 if let bill = Double(cell.tableBillLabel.text!.replacingOccurrences(of: " р.", with: "")) {
                     totalBill = bill
@@ -69,7 +77,7 @@ class BillViewController: UIViewController {
             debugPrint("mainVC или tableIndex равен nil")
         }
         
-        debugPrint("\(selectedProducts1), \(selectedProducts2), \(selectedProducts3), \(selectedProducts4)")
+        debugPrint("\(selectedProducts1), \(selectedProducts2), \(selectedProducts3), \(selectedProducts4), \(selectedProducts5), \(selectedProducts6)")
     }
     
     @IBAction func tipsChanged(_ sender: UISlider) {
@@ -89,7 +97,7 @@ class BillViewController: UIViewController {
     }
     
     @IBAction func doneButton(_ sender: UIButton) {
-        for clientIndex in 1...4 {
+        for clientIndex in 1...6 {
             UserDefaults.standard.removeObject(forKey: "productQuantitiesForTable_\(tables[selectedTableIndex])_client\(clientIndex)")
         }
         
@@ -112,7 +120,7 @@ class BillViewController: UIViewController {
     }
 
     func loadSelectedProducts() {
-        for clientIndex in 1...4 {
+        for clientIndex in 1...6 {
             let key = "productQuantitiesForTable_\(tables[selectedTableIndex])_client\(clientIndex)"
             if let savedProductData = UserDefaults.standard.dictionary(forKey: key) as? [String: Int] {
                 for (productName, quantity) in savedProductData {
@@ -126,6 +134,10 @@ class BillViewController: UIViewController {
                             selectedProducts3[product] = quantity
                         case 4:
                             selectedProducts4[product] = quantity
+                        case 5:
+                            selectedProducts5[product] = quantity
+                        case 6:
+                            selectedProducts6[product] = quantity
                         default:
                             break
                         }
@@ -144,6 +156,8 @@ class BillViewController: UIViewController {
             detailVC.productKolvo2 = selectedProducts2
             detailVC.productKolvo3 = selectedProducts3
             detailVC.productKolvo4 = selectedProducts4
+            detailVC.productKolvo5 = selectedProducts5
+            detailVC.productKolvo6 = selectedProducts6
         }
     }
 }
