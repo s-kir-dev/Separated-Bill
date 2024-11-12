@@ -16,11 +16,15 @@ class NewProductViewController: UIViewController {
     var prouctIsSelected = false
     var productCategory: Category!
     
+    var newProducts: [String] = []
+    
     @IBOutlet weak var typeButton: UIButton!
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var descriptionTextView: UITextView!
     @IBOutlet weak var priceTextField: UITextField!
     @IBOutlet weak var addButton: UIButton!
+    @IBOutlet weak var addImageButton: UIButton!
+    @IBOutlet weak var imageView: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +32,7 @@ class NewProductViewController: UIViewController {
         nameTextField.delegate = self
         descriptionTextView.delegate = self
         addButton.addTarget(self, action: #selector(addProduct), for: .touchUpInside)
+        addImageButton.addTarget(self, action: #selector(addImageButtonPressed), for: .touchUpInside)
         
         setMenu()
         addToolBarToKeyboard(priceTextField)
@@ -101,7 +106,7 @@ class NewProductViewController: UIViewController {
     }
     
     @objc func dismissKeyboard() {
-        if priceTextField.text?.isEmpty == false && descriptionTextView.text?.isEmpty == false && nameTextField.text?.isEmpty == false {
+        if priceTextField.text?.isEmpty == false && descriptionTextView.text?.isEmpty == false && nameTextField.text?.isEmpty == false && imageView.image != nil {
             addButton.isEnabled = true
         }
         
@@ -120,18 +125,26 @@ class NewProductViewController: UIViewController {
     }
     
     @objc func closeKeyboard() {
-        if priceTextField.text?.isEmpty == false && descriptionTextView.text?.isEmpty == false && nameTextField.text?.isEmpty == false {
+        if priceTextField.text?.isEmpty == false && descriptionTextView.text?.isEmpty == false && nameTextField.text?.isEmpty == false && imageView.image != nil {
             addButton.isEnabled = true
         }
         productDescription = descriptionTextView.text!
         view.endEditing(true)
     }
     
+    @objc func addImageButtonPressed() {
+        let vc = UIImagePickerController()
+        vc.sourceType = .photoLibrary
+        vc.delegate = self
+        vc.allowsEditing = true
+        present(vc, animated: true)
+    }
+    
     @objc func addProduct() {
         guard let name = nameTextField.text, !name.isEmpty,
               let description = descriptionTextView.text, !description.isEmpty,
               let priceText = priceTextField.text, let price = Double(priceText),
-              let category = productCategory else {
+              let category = productCategory, imageView.image != nil else {
             return
         }
 
@@ -173,14 +186,16 @@ class NewProductViewController: UIViewController {
         nameTextField.text = ""
         priceTextField.text = ""
         descriptionTextView.text = ""
+        imageView.image = nil
+        
         addButton.isEnabled = false
     }
 
 }
 
-extension NewProductViewController: UITextFieldDelegate, UITextViewDelegate {
+extension NewProductViewController: UITextFieldDelegate, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if priceTextField.text?.isEmpty == false && descriptionTextView.text?.isEmpty == false && nameTextField.text?.isEmpty == false {
+        if priceTextField.text?.isEmpty == false && descriptionTextView.text?.isEmpty == false && nameTextField.text?.isEmpty == false && imageView.image != nil {
             addButton.isEnabled = true
         }
         
@@ -192,10 +207,25 @@ extension NewProductViewController: UITextFieldDelegate, UITextViewDelegate {
         return true
     }
     func textViewShouldReturn(_ textView: UITextView) -> Bool {
-        if priceTextField.text?.isEmpty == false && descriptionTextView.text?.isEmpty == false && nameTextField.text?.isEmpty == false {
+        if priceTextField.text?.isEmpty == false && descriptionTextView.text?.isEmpty == false && nameTextField.text?.isEmpty == false && imageView.image != nil {
             addButton.isEnabled = true
         }
         textView.resignFirstResponder()
         return true
     }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let image = info[.editedImage] as? UIImage {
+            imageView.image = image
+        }
+        if priceTextField.text?.isEmpty == false && descriptionTextView.text?.isEmpty == false && nameTextField.text?.isEmpty == false && imageView.image != nil {
+            addButton.isEnabled = true
+        }
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
 }

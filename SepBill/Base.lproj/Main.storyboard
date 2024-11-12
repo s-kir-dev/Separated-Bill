@@ -878,6 +878,21 @@
                                     <color key="baseBackgroundColor" red="0.87058818339999999" green="0.60784316059999999" blue="0.31764706970000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 </buttonConfiguration>
                             </button>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="f0t-q9-NeR">
+                                <rect key="frame" x="44" y="475" width="163" height="197"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" systemColor="placeholderTextColor"/>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="itQ-6y-WLS">
+                                <rect key="frame" x="215" y="556" width="133" height="40"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" image="photo.circle.fill" catalog="system" title=" Выбрать фото">
+                                    <fontDescription key="titleFontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="11"/>
+                                    <color key="baseForegroundColor" systemColor="labelColor"/>
+                                    <color key="baseBackgroundColor" red="0.87058818339999999" green="0.60784316059999999" blue="0.31764706970000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                </buttonConfiguration>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="XPL-fN-fu5"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -885,7 +900,9 @@
                     <tabBarItem key="tabBarItem" title="Добавить" image="plus.app.fill" catalog="system" id="M3j-yr-D7U"/>
                     <connections>
                         <outlet property="addButton" destination="DVb-5G-jHq" id="faC-pB-hA2"/>
+                        <outlet property="addImageButton" destination="itQ-6y-WLS" id="y2q-tz-e2K"/>
                         <outlet property="descriptionTextView" destination="PxP-GP-CMn" id="Fxy-eY-cPm"/>
+                        <outlet property="imageView" destination="f0t-q9-NeR" id="avz-ow-c7L"/>
                         <outlet property="nameTextField" destination="lV1-Ex-SQi" id="cEb-Zr-YZo"/>
                         <outlet property="priceTextField" destination="nYO-67-rgM" id="qYf-0x-Udd"/>
                         <outlet property="typeButton" destination="ZQv-t2-NlQ" id="oOs-hH-Vmb"/>
@@ -893,7 +910,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yDm-Ii-xac" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3752" y="1060"/>
+            <point key="canvasLocation" x="3751.9083969465646" y="1059.8591549295775"/>
         </scene>
         <!--Menu View Controller-->
         <scene sceneID="2qU-5C-35w">
@@ -1606,6 +1623,7 @@
         <image name="menucard.fill" catalog="system" width="105" height="128"/>
         <image name="minus.circle" catalog="system" width="128" height="123"/>
         <image name="person.crop.circle.fill" catalog="system" width="128" height="123"/>
+        <image name="photo.circle.fill" catalog="system" width="128" height="123"/>
         <image name="plus" catalog="system" width="128" height="113"/>
         <image name="plus.app.fill" catalog="system" width="128" height="114"/>
         <image name="plus.circle.fill" catalog="system" width="128" height="123"/>
@@ -1616,6 +1634,9 @@
         </namedColor>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="placeholderTextColor">
+            <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.29803921570000003" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
