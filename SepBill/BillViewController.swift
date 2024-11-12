@@ -16,6 +16,12 @@ class BillViewController: UIViewController {
     @IBOutlet weak var client4Bill: UILabel!
     @IBOutlet weak var client5Bill: UILabel!
     @IBOutlet weak var client6Bill: UILabel!
+    @IBOutlet weak var client1Label: UILabel!
+    @IBOutlet weak var client2Label: UILabel!
+    @IBOutlet weak var client3Label: UILabel!
+    @IBOutlet weak var client4Label: UILabel!
+    @IBOutlet weak var client5Label: UILabel!
+    @IBOutlet weak var client6Label: UILabel!
     @IBOutlet weak var tableBill: UILabel!
     @IBOutlet weak var tipsLabel: UILabel!
     @IBOutlet weak var totalBillLabel: UILabel!
@@ -40,11 +46,22 @@ class BillViewController: UIViewController {
     var selectedProducts4: [Product: Int] = [:]
     var selectedProducts5: [Product: Int] = [:]
     var selectedProducts6: [Product: Int] = [:]
+    var clientsCount: Int = 0
 
     var mainVC: MainViewController!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        debugPrint("clientsCount:", clientsCount)
+        
+        let bills = [client1Bill, client2Bill, client3Bill, client4Bill, client5Bill, client6Bill]
+        let labeles = [client1Label, client2Label, client3Label, client4Label, client5Label, client6Label]
+        
+        for label in 1..<clientsCount {
+            bills[label]!.isHidden = false
+            labeles[label]!.isHidden = false
+        }
 
         menuProducts.append(contentsOf: Products.drinksWithoutAlcohol)
         menuProducts.append(contentsOf: Products.drinksWithAlcohol)

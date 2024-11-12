@@ -52,7 +52,19 @@ class NewMenuViewController: UIViewController, UITableViewDelegate, UITableViewD
         return cell
     }
     
-
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(style: .destructive, title: "Удалить") { (action, view, completionHandler) in
+            self.menuProducts.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+            completionHandler(true)
+        }
+        
+        deleteAction.backgroundColor = .red.withAlphaComponent(0.9)
+        deleteAction.image = UIImage(systemName: "trash")
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+        configuration.performsFirstActionWithFullSwipe = false
+        return configuration
+    }
 
     func loadMenuProducts() {
         menuProducts.append(contentsOf: Products.drinksWithoutAlcohol)

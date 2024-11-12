@@ -515,6 +515,11 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 billVC.tableIndex = indexPath
                 billVC.selectedTableIndex = indexPath.row
                 billVC.tables = tableNumbers
+                if let personsCount = tablePersonsCount[tableNumbers[indexPath.row]] {
+                    billVC.clientsCount = personsCount
+                } else {
+                    billVC.clientsCount = 0 
+                }
                 billVC.mainVC = self
             }
         }
