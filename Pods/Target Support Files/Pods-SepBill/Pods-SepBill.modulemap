@@ -1,0 +1,6 @@
+framework module Pods_SepBill {
+  umbrella header "Pods-SepBill-umbrella.h"
+
+  export *
+  module * { export * }
+}
