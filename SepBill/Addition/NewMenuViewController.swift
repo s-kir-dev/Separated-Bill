@@ -6,9 +6,11 @@
 //
 
 import UIKit
+import FirebaseStorage
 
 class NewMenuViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
+    let storage = Storage.storage()
     var menuProducts: [Product] = []
     
     @IBOutlet weak var menuTableView: UITableView!

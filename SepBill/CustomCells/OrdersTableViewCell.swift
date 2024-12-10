@@ -9,10 +9,11 @@ import UIKit
 
 class OrdersTableViewCell: UITableViewCell {
 
-    @IBOutlet weak var productImage: UIImage!
+    @IBOutlet weak var productImage: UIImageView!
     @IBOutlet weak var productName: UILabel!
     @IBOutlet weak var tableNumber: UILabel!
     @IBOutlet weak var clientNumber: UILabel!
+    @IBOutlet weak var quantity: UILabel!
     
     
     override func awakeFromNib() {

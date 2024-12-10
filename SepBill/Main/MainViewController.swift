@@ -24,6 +24,20 @@ protocol SettingsViewControllerDelegate: AnyObject {
 
 class MainViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, MainViewControllerDelegate, SettingsViewControllerDelegate, MenuViewControllerDelegate, MenuForSecondClientViewControllerDelegate, MenuForThirdClientViewControllerDelegate, MenuForFourthClientViewControllerDelegate, MenuForFifthClientViewControllerDelegate, MenuForSixthClientViewControllerDelegate {
     
+    var menuProducts: [Product] = []
+    var selectedProducts1: [Product] = []
+    var selectedProducts2: [Product] = []
+    var selectedProducts3: [Product] = []
+    var selectedProducts4: [Product] = []
+    var selectedProducts5: [Product] = []
+    var selectedProducts6: [Product] = []
+    var productQuantities1: [Product: Int] = [:]
+    var productQuantities2: [Product: Int] = [:]
+    var productQuantities3: [Product: Int] = [:]
+    var productQuantities4: [Product: Int] = [:]
+    var productQuantities5: [Product: Int] = [:]
+    var productQuantities6: [Product: Int] = [:]
+    
     let db = Firestore.firestore()
     let cafeID = UserDefaults.standard.string(forKey: "CafeID")!
 
@@ -53,6 +67,18 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     func didUpdatePersonsCount(_ personsCount: Int, forTable tableNumber: Int) {
         tablePersonsCount[tableNumber] = personsCount
         tables.reloadData() // Перезагружаем таблицу, если изменилось количество клиентов
+    }
+    
+    func loadMenuProducts() {
+        menuProducts.append(contentsOf: Products.drinksWithoutAlcohol)
+        menuProducts.append(contentsOf: Products.drinksWithAlcohol)
+        menuProducts.append(contentsOf: Products.hotFishDishes)
+        menuProducts.append(contentsOf: Products.hotMeatDishes)
+        menuProducts.append(contentsOf: Products.pasta)
+        menuProducts.append(contentsOf: Products.soups)
+        menuProducts.append(contentsOf: Products.salats)
+        menuProducts.append(contentsOf: Products.snacks)
+        menuProducts.append(contentsOf: Products.desserts)
     }
     
     @IBAction func plusButtonTapped(_ sender: UIButton) {
@@ -125,6 +151,8 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
            let savedPersonsCount = try? JSONDecoder().decode([Int: Int].self, from: savedPersonsCountData) {
             tablePersonsCount = savedPersonsCount
         }
+        
+        loadMenuProducts()
         
         // Загрузка счетов для каждого стола
         loadBills()
@@ -213,59 +241,150 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
     }
     
+    func loadSelectedProducts(_ selectedTable: Int, _ client: Int) {
+        guard let savedProductData = UserDefaults.standard.dictionary(forKey: "productQuantitiesForTable_\(selectedTable)_client\(client)") as? [String: Int] else {
+            print("No saved data for table \(selectedTable), client \(client)")
+            return
+        }
+
+        for (productName, quantity) in savedProductData {
+            guard let product = menuProducts.first(where: { $0.productName == productName }) else {
+                print("Product \(productName) not found in menuProducts")
+                continue
+            }
+
+            switch client {
+            case 1:
+                selectedProducts1.append(product)
+                productQuantities1[product] = quantity
+            case 2:
+                selectedProducts2.append(product)
+                productQuantities2[product] = quantity
+            case 3:
+                selectedProducts3.append(product)
+                productQuantities3[product] = quantity
+            case 4:
+                selectedProducts4.append(product)
+                productQuantities4[product] = quantity
+            case 5:
+                selectedProducts5.append(product)
+                productQuantities5[product] = quantity
+            case 6:
+                selectedProducts6.append(product)
+                productQuantities6[product] = quantity
+            default:
+                print("Invalid client number: \(client)")
+            }
+        }
+
+        // Debugging output
+        print("Loaded products for client \(client):")
+        switch client {
+        case 1: print(selectedProducts1)
+        case 2: print(selectedProducts2)
+        case 3: print(selectedProducts3)
+        case 4: print(selectedProducts4)
+        case 5: print(selectedProducts5)
+        case 6: print(selectedProducts6)
+        default: break
+        }
+    }
+    
     @IBAction func backToMain(_ segue: UIStoryboardSegue) {
-        
+        var selectedTable : Int
+
+        var clientNumber = 0
+        var selectedProducts: [Product] = []
+        var productQuantities: [Product: Int] = [:]
+        var currentBill: Double = 0.0
+        var newBill: Double = 0.0
+
+        // Определяем клиента и получаем данные
         if let menuVC = segue.source as? MenuViewController {
-            let selectedTable = tableNumbers[selectedTableIndex]
-            let currentBill = client1BillFromMenu[selectedTable] ?? 0.00
-            let newBill = menuVC.client1Bill
-            db.collection(cafeID).document("Table №\(selectedTable)").collection("orders").document("Client1").setData([
-                "productName": "product1"
-            ])
-            updateBill(for: selectedTable, with: currentBill + newBill)
+            selectedTable = tableNumbers[selectedTableIndex]
+            clientNumber = 1
+            currentBill = client1BillFromMenu[selectedTable] ?? 0.0
+            newBill = menuVC.client1Bill
+            loadSelectedProducts(selectedTable, clientNumber)
+            selectedProducts = selectedProducts1
+            productQuantities = productQuantities1
         } else if let menu2VC = segue.source as? MenuForSecondClientViewController {
-            let selectedTable = tableNumbers[selectedTableIndex]
-            let currentBill = client2BillFromMenu[selectedTable] ?? 0.00
-            let newBill = menu2VC.client2Bill
-            db.collection(cafeID).document("Table №\(selectedTable)").collection("orders").document("Client2").setData([
-                "productName2": "product2"
-            ])
-            updateSecondClientBill(for: selectedTable, with: currentBill + newBill)
+            selectedTable = tableNumbers[selectedTableIndex]
+            clientNumber = 2
+            currentBill = client2BillFromMenu[selectedTable] ?? 0.0
+            newBill = menu2VC.client2Bill
+            loadSelectedProducts(selectedTable, clientNumber)
+            selectedProducts = selectedProducts2
+            productQuantities = productQuantities2
         } else if let menu3VC = segue.source as? MenuForThirdClientViewController {
-            let selectedTable = tableNumbers[selectedTableIndex]
-            let currentBill = client3BillFromMenu[selectedTable] ?? 0.00
-            let newBill = menu3VC.client3Bill
-            db.collection(cafeID).document("Table №\(selectedTable)").collection("orders").document("Client3").setData([
-                "productName3": "product3"
-            ])
-            updateThirdClientBill(for: selectedTable, with: currentBill + newBill)
+            selectedTable = tableNumbers[selectedTableIndex]
+            clientNumber = 3
+            currentBill = client3BillFromMenu[selectedTable] ?? 0.0
+            newBill = menu3VC.client3Bill
+            loadSelectedProducts(selectedTable, clientNumber)
+            selectedProducts = selectedProducts3
+            productQuantities = productQuantities3
         } else if let menu4VC = segue.source as? MenuForFourthClientViewController {
-            let selectedTable = tableNumbers[selectedTableIndex]
-            let currentBill = client4BillFromMenu[selectedTable] ?? 0.00
-            let newBill = menu4VC.client4Bill
-            db.collection(cafeID).document("Table №\(selectedTable)").collection("orders").document("Client4").setData([
-                "productName4": "product4"
-            ])
-            updateFourthClientBill(for: selectedTable, with: currentBill + newBill)
+            selectedTable = tableNumbers[selectedTableIndex]
+            clientNumber = 4
+            currentBill = client4BillFromMenu[selectedTable] ?? 0.0
+            newBill = menu4VC.client4Bill
+            loadSelectedProducts(selectedTable, clientNumber)
+            selectedProducts = selectedProducts4
+            productQuantities = productQuantities4
         } else if let menu5VC = segue.source as? MenuForFifthViewController {
-            let selectedTable = tableNumbers[selectedTableIndex]
-            let currentBill = client5BillFromMenu[selectedTable] ?? 0.00
-            let newBill = menu5VC.client5Bill
-            db.collection(cafeID).document("Table №\(selectedTable)").collection("orders").document("Client5").setData([
-                "productName5": "product5"
-            ])
-            updateFifthClientBill(for: selectedTable, with: currentBill + newBill)
+            selectedTable = tableNumbers[selectedTableIndex]
+            clientNumber = 5
+            currentBill = client5BillFromMenu[selectedTable] ?? 0.0
+            newBill = menu5VC.client5Bill
+            loadSelectedProducts(selectedTable, clientNumber)
+            selectedProducts = selectedProducts5
+            productQuantities = productQuantities5
         } else if let menu6VC = segue.source as? MenuForSixthViewController {
-            let selectedTable = tableNumbers[selectedTableIndex]
-            let currentBill = client6BillFromMenu[selectedTable] ?? 0.00
-            let newBill = menu6VC.client6Bill
-            db.collection(cafeID).document("Table №\(selectedTable)").collection("orders").document("Client6").setData([
-                "productName6": "product6"
-            ])
-            updateSixthClientBill(for: selectedTable, with: currentBill + newBill)
+            selectedTable = tableNumbers[selectedTableIndex]
+            clientNumber = 6
+            currentBill = client6BillFromMenu[selectedTable] ?? 0.0
+            newBill = menu6VC.client6Bill
+            loadSelectedProducts(selectedTable, clientNumber)
+            selectedProducts = selectedProducts6
+            productQuantities = productQuantities6
+        } else {
+            print("Unknown segue source")
+            return
         }
         
-        debugPrint("На основном экране")
+        // Сохраняем данные в Firestore
+        for product in selectedProducts {
+            db.collection(cafeID)
+                .document("Table №\(selectedTable)")
+                .collection("orders")
+                .document("Client\(clientNumber)")
+                .collection("orderedProducts")
+                .document("\(product.productName) order")
+                .setData([
+                    "a tableNumber": selectedTable,
+                    "b clientNumber": clientNumber,
+                    "productName": product.productName,
+                    "productImage": product.productImage,
+                    "productPrice": product.productPrice,
+                    "productDescription": product.productDescription,
+                    "productCategory": product.productCategory.rawValue,
+                    "productQuantity": productQuantities[product] ?? 0,
+                    "timestamp": FieldValue.serverTimestamp()  // Добавление временной метки
+                ])
+        }
+
+        switch clientNumber {
+        case 1: updateBill(for: selectedTable, with: currentBill + newBill)
+        case 2: updateSecondClientBill(for: selectedTable, with: currentBill + newBill)
+        case 3: updateThirdClientBill(for: selectedTable, with: currentBill + newBill)
+        case 4: updateFourthClientBill(for: selectedTable, with: currentBill + newBill)
+        case 5: updateFifthClientBill(for: selectedTable, with: currentBill + newBill)
+        case 6: updateSixthClientBill(for: selectedTable, with: currentBill + newBill)
+        default: break
+        }
+
+        print("Returned to main screen for table \(selectedTable), client \(clientNumber)")
     }
     
     @IBAction func cancelToMain(_ segue: UIStoryboardSegue) {

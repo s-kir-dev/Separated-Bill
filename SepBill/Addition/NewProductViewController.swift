@@ -43,7 +43,7 @@ class NewProductViewController: UIViewController {
     
     func upload(image: UIImage, imageName: String, completion: @escaping (Result<URL, Error>) -> Void) {
         let storage = Storage.storage()
-        let uniqueImageName = "\(UUID().uuidString)_\(imageName).jpg"
+        let uniqueImageName = "\(imageName)"
         let ref = storage.reference().child("productImages/\(uniqueImageName)")
         
         guard let imageData = image.jpegData(compressionQuality: 0.8) else {

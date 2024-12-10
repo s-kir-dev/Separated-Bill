@@ -34,6 +34,7 @@ class AccountTypeViewController: UIViewController {
         default:
             print("Добавлю еще тип потом")
         }
+        UserDefaults.standard.set(cafeID, forKey: "CafeID")
     }
     
     

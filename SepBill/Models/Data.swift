@@ -28,3 +28,22 @@ struct Product: Codable, Equatable, Hashable {
                lhs.productImage == rhs.productImage
     }
 }
+
+
+struct Order: Codable, Equatable, Hashable {
+    let productImage: String
+    let productName: String
+    let productDescription: String
+    let productPrice: Double
+    let productQuantity: Int
+    let clientID: Int
+    let tableNumber: Int
+    let productCategory: Category
+    
+    static func == (lhs: Order, rhs: Order) -> Bool {
+        return lhs.productName == rhs.productName &&
+               lhs.productDescription == rhs.productDescription &&
+               lhs.productPrice == rhs.productPrice &&
+               lhs.productImage == rhs.productImage
+    }
+}
